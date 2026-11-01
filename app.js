@@ -1,4 +1,4 @@
-const PRODUCTS = [
+let PRODUCTS = [
   {
     id: 'AJ-N01',
     category: 'necklaces',
@@ -345,5 +345,20 @@ checkoutForm.addEventListener('submit', (e) => {
   orderSuccessMsg.innerHTML = `ยืนยันคำสั่งซื้อ #${code} เรียบร้อยแล้ว<br>คุณ ${name} · ยอดชำระ ${formatSwPrice(total)}`;
 });
 
-renderCatalog();
-renderBag();
+async function loadProductsFromServer() {
+  try {
+    const res = await fetch('products.json?t=' + Date.now());
+    if (res.ok) {
+      const data = await res.json();
+      if (Array.isArray(data) && data.length > 0) {
+        PRODUCTS = data;
+      }
+    }
+  } catch (e) {
+    // Fallback to built-in PRODUCTS if opened via file://
+  }
+  renderCatalog();
+  renderBag();
+}
+
+loadProductsFromServer();

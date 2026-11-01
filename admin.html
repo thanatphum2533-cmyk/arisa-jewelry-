@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ระบบจัดการสินค้า | ARISA JEWELRY</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@300;400;500;600&family=Cormorant+Garamond:wght@500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .admin-wrap {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 36px 24px 80px;
+    }
+    .admin-grid {
+      display: grid;
+      grid-template-columns: 380px 1fr;
+      gap: 32px;
+      align-items: start;
+    }
+    .admin-panel {
+      background: #FFFFFF;
+      border: 1px solid #E5E5E5;
+      padding: 28px;
+    }
+    .admin-panel h2 {
+      font-size: 18px;
+      font-weight: 500;
+      margin-bottom: 18px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #E5E5E5;
+    }
+    .field-group {
+      margin-bottom: 14px;
+    }
+    .field-group label {
+      display: block;
+      font-size: 12.5px;
+      color: #545454;
+      margin-bottom: 5px;
+      font-weight: 500;
+    }
+    .field-input {
+      width: 100%;
+      padding: 9px 12px;
+      border: 1px solid #CCCCCC;
+      font: inherit;
+      font-size: 13.5px;
+      background: #FFFFFF;
+    }
+    .field-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .img-upload-box {
+      border: 1px dashed #999999;
+      background: #F8F6F2;
+      padding: 18px;
+      text-align: center;
+      cursor: pointer;
+      position: relative;
+    }
+    .img-upload-box:hover {
+      border-color: #141414;
+    }
+    .img-preview {
+      width: 100%;
+      max-height: 200px;
+      object-fit: cover;
+      margin-bottom: 10px;
+      display: none;
+    }
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .admin-table th,
+    .admin-table td {
+      padding: 12px;
+      border-bottom: 1px solid #E5E5E5;
+      text-align: left;
+      font-size: 13.5px;
+    }
+    .admin-table th {
+      font-size: 12px;
+      color: #767676;
+      font-weight: 500;
+      background: #F8F6F2;
+    }
+    .admin-thumb {
+      width: 54px;
+      height: 54px;
+      object-fit: cover;
+      background: #F3F2F0;
+    }
+    .status-banner {
+      padding: 12px 16px;
+      margin-bottom: 24px;
+      font-size: 13.5px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      background: #F8F6F2;
+      border: 1px solid #E5E5E5;
+    }
+    .btn-sm {
+      padding: 5px 10px;
+      font-size: 12px;
+      border: 1px solid #CCCCCC;
+      margin-right: 4px;
+    }
+    .btn-sm:hover {
+      border-color: #141414;
+    }
+    .btn-publish {
+      background: #141414;
+      color: #FFFFFF;
+      padding: 11px 22px;
+      font-size: 13.5px;
+      font-weight: 500;
+    }
+    .btn-publish:hover {
+      opacity: 0.85;
+    }
+    @media (max-width: 900px) {
+      .admin-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="sw-header">
+    <div class="sw-header-inner">
+      <div class="sw-header-left">
+        <a href="index.html" style="text-decoration: underline;">← กลับไปหน้าร้านค้า</a>
+      </div>
+      <a href="index.html" class="sw-brand">
+        <img src="assets/logo-black.png" alt="ARISA JEWELRY" class="sw-brand-logo">
+      </a>
+      <div class="sw-header-right">
+        <span style="font-size: 13px; font-weight: 500;">ระบบจัดการสินค้า (Admin)</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="admin-wrap">
+    <!-- Top Connection & Publish Bar -->
+    <div class="status-banner">
+      <div>
+        <strong>การเชื่อมต่อเว็บจริง (GitHub):</strong>
+        <span id="connStatus">พร้อมแก้ไขรายการสินค้า</span>
+      </div>
+      <div style="display: flex; gap: 10px; align-items: center;">
+        <button type="button" class="btn-sm" id="tokenBtn">ตั้งค่ารหัสเชื่อมต่อ (Token)</button>
+        <button type="button" class="btn-publish" id="publishBtn">บันทึกขึ้นเว็บจริงทันที</button>
+      </div>
+    </div>
+
+    <div class="admin-grid">
+      <!-- Left: Add / Edit Product Form -->
+      <section class="admin-panel">
+        <h2 id="formHeading">เพิ่มสินค้าใหม่</h2>
+        <form id="productForm">
+          <input type="hidden" id="editIndex" value="-1">
+
+          <div class="field-group">
+            <label>รูปภาพสินค้า (คลิกเพื่อเลือกรูปจากเครื่อง)</label>
+            <div class="img-upload-box" id="uploadBox">
+              <img id="imgPreview" class="img-preview" alt="Preview">
+              <div id="uploadPrompt" style="font-size: 13px; color: #545454;">
+                + คลิกเลือกรูปภาพสินค้า (.jpg / .png)
+              </div>
+              <input type="file" id="imgInput" accept="image/*" style="display: none;">
+            </div>
+          </div>
+
+          <div class="field-row">
+            <div class="field-group">
+              <label>รหัสสินค้า</label>
+              <input type="text" id="pId" class="field-input" placeholder="เช่น AJ-N05" required>
+            </div>
+            <div class="field-group">
+              <label>หมวดหมู่</label>
+              <select id="pCat" class="field-input">
+                <option value="necklaces">สร้อยคอและจี้</option>
+                <option value="earrings">ต่างหู</option>
+                <option value="rings">แหวน</option>
+                <option value="bracelets">สร้อยข้อมือและกำไล</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label>ชื่อสินค้า</label>
+            <input type="text" id="pName" class="field-input" placeholder="เช่น สร้อยคอเงินแท้ ลายอิตาลี" required>
+          </div>
+
+          <div class="field-group">
+            <label>คำโปรยสั้นๆ (แสดงใต้ชื่อสินค้า)</label>
+            <input type="text" id="pSub" class="field-input" placeholder="เช่น เงินแท้ 92.5%, ขัดเงาโรเดียม" required>
+          </div>
+
+          <div class="field-row">
+            <div class="field-group">
+              <label>ราคา (บาท)</label>
+              <input type="number" id="pPrice" class="field-input" placeholder="890" required>
+            </div>
+            <div class="field-group">
+              <label>ป้ายกำกับ (เว้นว่างได้)</label>
+              <select id="pBadge" class="field-input">
+                <option value="">ไม่มีป้าย</option>
+                <option value="ขายดี">ขายดี</option>
+                <option value="ใหม่">ใหม่</option>
+                <option value="แนะนำ">แนะนำ</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field-row">
+            <div class="field-group">
+              <label>น้ำหนักเนื้อเงิน</label>
+              <input type="text" id="pWeight" class="field-input" placeholder="เช่น 4.5 กรัม" required>
+            </div>
+            <div class="field-group">
+              <label>ขนาด / ความยาว</label>
+              <input type="text" id="pSizing" class="field-input" placeholder="เช่น ยาว 16 / 18 นิ้ว" required>
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label>รายละเอียดสินค้า</label>
+            <textarea id="pDesc" rows="3" class="field-input" placeholder="อธิบายจุดเด่นของชิ้นงาน..."></textarea>
+          </div>
+
+          <button type="submit" class="sw-btn-black" id="saveItemBtn">เพิ่มลงรายการสินค้า</button>
+          <button type="button" class="btn-sm" id="cancelEditBtn" style="width: 100%; margin-top: 8px; display: none;">ยกเลิกการแก้ไข</button>
+        </form>
+      </section>
+
+      <!-- Right: Current Product List -->
+      <section class="admin-panel">
+        <h2>รายการสินค้าทั้งหมดในร้าน (<span id="totalItems">0</span> ชิ้น)</h2>
+        <div style="overflow-x: auto;">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>รูป</th>
+                <th>รหัส / ชื่อสินค้า</th>
+                <th>หมวดหมู่</th>
+                <th>ราคา</th>
+                <th>จัดการ</th>
+              </tr>
+            </thead>
+            <tbody id="adminTableBody"></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    const REPO = 'thanatphum2533-cmyk/arisa-jewelry-';
+    let products = [];
+    let pendingImages = {}; // filename -> base64 content (without prefix)
+    let currentImagePath = 'assets/p1.jpg';
+
+    // Check URL hash or localStorage for token
+    if (window.location.hash.startsWith('#token=')) {
+      const t = window.location.hash.replace('#token=', '');
+      localStorage.setItem('aj_gh_token', t);
+      history.replaceState(null, '', window.location.pathname);
+    }
+
+    function updateTokenStatus() {
+      const t = localStorage.getItem('aj_gh_token');
+      const el = document.getElementById('connStatus');
+      if (t) {
+        el.textContent = 'เชื่อมต่อกับ GitHub แล้ว (กดบันทึกขึ้นเว็บจริงได้ทันที)';
+        el.style.color = '#1a7f37';
+      } else {
+        el.textContent = 'ยังไม่ได้ใส่รหัสเชื่อมต่อ GitHub (กดปุ่มตั้งค่ารหัสเชื่อมต่อด้านขวา)';
+        el.style.color = '#9a6700';
+      }
+    }
+
+    document.getElementById('tokenBtn').addEventListener('click', () => {
+      const current = localStorage.getItem('aj_gh_token') || '';
+      const input = prompt('วางรหัสเชื่อมต่อ GitHub (Personal Access Token) สำหรับอัปเดตเว็บจริง:', current);
+      if (input !== null) {
+        localStorage.setItem('aj_gh_token', input.trim());
+        updateTokenStatus();
+      }
+    });
+
+    // Load initial products
+    async function initAdmin() {
+      updateTokenStatus();
+      try {
+        const res = await fetch('products.json?t=' + Date.now());
+        if (res.ok) {
+          products = await res.json();
+        }
+      } catch (e) {}
+      renderTable();
+    }
+
+    const CAT_LABELS = {
+      necklaces: 'สร้อยคอ',
+      earrings: 'ต่างหู',
+      rings: 'แหวน',
+      bracelets: 'สร้อยข้อมือ'
+    };
+
+    function renderTable() {
+      document.getElementById('totalItems').textContent = products.length;
+      const tbody = document.getElementById('adminTableBody');
+      tbody.innerHTML = products.map((p, idx) => `
+        <tr>
+          <td><img src="${p.image}" class="admin-thumb" alt="${p.name}"></td>
+          <td>
+            <div style="font-size: 11.5px; color: #767676;">${p.id} ${p.badge ? `· <strong>[${p.badge}]</strong>` : ''}</div>
+            <div style="font-weight: 500;">${p.name}</div>
+            <div style="font-size: 12px; color: #767676;">${p.sub}</div>
+          </td>
+          <td>${CAT_LABELS[p.category] || p.category}</td>
+          <td style="font-weight: 500;">${Number(p.price).toLocaleString()} ฿</td>
+          <td style="white-space: nowrap;">
+            <button type="button" class="btn-sm" onclick="editItem(${idx})">แก้ไข</button>
+            <button type="button" class="btn-sm" onclick="deleteItem(${idx})">ลบ</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    // Image Resize & Compression on Upload
+    const uploadBox = document.getElementById('uploadBox');
+    const imgInput = document.getElementById('imgInput');
+    const imgPreview = document.getElementById('imgPreview');
+
+    uploadBox.addEventListener('click', () => imgInput.click());
+
+    imgInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const maxDim = 900;
+          let w = img.width;
+          let h = img.height;
+          if (w > maxDim || h > maxDim) {
+            if (w > h) { h = Math.round(h * maxDim / w); w = maxDim; }
+            else { w = Math.round(w * maxDim / h); h = maxDim; }
+          }
+          canvas.width = w;
+          canvas.height = h;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, w, h);
+
+          const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+          imgPreview.src = dataUrl;
+          imgPreview.style.display = 'block';
+
+          const filename = 'assets/item-' + Date.now() + '.jpg';
+          currentImagePath = filename;
+          pendingImages[filename] = {
+            base64: dataUrl.split(',')[1],
+            previewUrl: dataUrl
+          };
+        };
+        img.src = ev.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+
+    // Add or Update Product in List
+    document.getElementById('productForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const idx = parseInt(document.getElementById('editIndex').value, 10);
+      const item = {
+        id: document.getElementById('pId').value.trim(),
+        category: document.getElementById('pCat').value,
+        name: document.getElementById('pName').value.trim(),
+        sub: document.getElementById('pSub').value.trim(),
+        price: Number(document.getElementById('pPrice').value),
+        badge: document.getElementById('pBadge').value,
+        weight: document.getElementById('pWeight').value.trim(),
+        sizing: document.getElementById('pSizing').value.trim(),
+        desc: document.getElementById('pDesc').value.trim(),
+        image: currentImagePath
+      };
+
+      if (idx >= 0) {
+        products[idx] = item;
+      } else {
+        products.unshift(item);
+      }
+
+      resetForm();
+      renderTable();
+      document.getElementById('connStatus').textContent = 'มีการแก้ไขที่ยังไม่ได้กดบันทึกขึ้นเว็บจริง — กรุณากดปุ่ม "บันทึกขึ้นเว็บจริงทันที" ด้านขวา';
+    });
+
+    window.editItem = function(idx) {
+      const p = products[idx];
+      document.getElementById('editIndex').value = idx;
+      document.getElementById('formHeading').textContent = 'แก้ไขสินค้า: ' + p.id;
+      document.getElementById('pId').value = p.id;
+      document.getElementById('pCat').value = p.category;
+      document.getElementById('pName').value = p.name;
+      document.getElementById('pSub').value = p.sub;
+      document.getElementById('pPrice').value = p.price;
+      document.getElementById('pBadge').value = p.badge || '';
+      document.getElementById('pWeight').value = p.weight;
+      document.getElementById('pSizing').value = p.sizing;
+      document.getElementById('pDesc').value = p.desc;
+
+      currentImagePath = p.image;
+      imgPreview.src = pendingImages[p.image] ? pendingImages[p.image].previewUrl : p.image;
+      imgPreview.style.display = 'block';
+
+      document.getElementById('saveItemBtn').textContent = 'บันทึกการแก้ไขรายการนี้';
+      document.getElementById('cancelEditBtn').style.display = 'block';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    window.deleteItem = function(idx) {
+      if (!confirm('ต้องการลบสินค้าชิ้นนี้ออกจากร้านใช่หรือไม่?')) return;
+      products.splice(idx, 1);
+      renderTable();
+      document.getElementById('connStatus').textContent = 'ลบรายการแล้ว — กรุณากดปุ่ม "บันทึกขึ้นเว็บจริงทันที" เพื่ออัปเดตหน้าเว็บ';
+    };
+
+    function resetForm() {
+      document.getElementById('productForm').reset();
+      document.getElementById('editIndex').value = '-1';
+      document.getElementById('formHeading').textContent = 'เพิ่มสินค้าใหม่';
+      document.getElementById('saveItemBtn').textContent = 'เพิ่มลงรายการสินค้า';
+      document.getElementById('cancelEditBtn').style.display = 'none';
+      imgPreview.style.display = 'none';
+      currentImagePath = 'assets/p1.jpg';
+    }
+
+    document.getElementById('cancelEditBtn').addEventListener('click', resetForm);
+
+    // Publish directly to GitHub Repository via REST API
+    async function githubPutFile(path, base64Content, message, token) {
+      const url = `https://api.github.com/repos/${REPO}/contents/${path}`;
+      const headers = {
+        'Authorization': `Bearer ${token}`,
+        'Accept': 'application/vnd.github+json',
+        'Content-Type': 'application/json'
+      };
+
+      let sha = null;
+      const getRes = await fetch(url, { headers });
+      if (getRes.ok) {
+        const existing = await getRes.json();
+        sha = existing.sha;
+      }
+
+      const body = { message, content: base64Content };
+      if (sha) body.sha = sha;
+
+      const putRes = await fetch(url, {
+        method: 'PUT',
+        headers,
+        body: JSON.stringify(body)
+      });
+
+      if (!putRes.ok) {
+        throw new Error('GitHub API Error: ' + putRes.status);
+      }
+    }
+
+    function utf8ToBase64(str) {
+      return btoa(unescape(encodeURIComponent(str)));
+    }
+
+    document.getElementById('publishBtn').addEventListener('click', async () => {
+      const token = localStorage.getItem('aj_gh_token');
+      if (!token) {
+        alert('กรุณากดปุ่ม "ตั้งค่ารหัสเชื่อมต่อ (Token)" ก่อนทำการบันทึกขึ้นเว็บจริงครับ');
+        return;
+      }
+
+      const btn = document.getElementById('publishBtn');
+      const statusEl = document.getElementById('connStatus');
+      btn.disabled = true;
+      btn.textContent = 'กำลังอัปโหลดขึ้นเว็บจริง...';
+
+      try {
+        // 1. Upload any newly added product images to assets/
+        for (const [imgPath, imgObj] of Object.entries(pendingImages)) {
+          statusEl.textContent = `กำลังอัปโหลดรูปภาพ ${imgPath}...`;
+          await githubPutFile(imgPath, imgObj.base64, `Upload product image ${imgPath}`, token);
+        }
+        pendingImages = {};
+
+        // 2. Upload updated products.json
+        statusEl.textContent = 'กำลังอัปเดตฐานข้อมูลสินค้า products.json...';
+        const jsonStr = JSON.stringify(products, null, 2);
+        await githubPutFile('products.json', utf8ToBase64(jsonStr), 'Update catalog products.json via Admin Panel', token);
+
+        statusEl.textContent = '✓ อัปเดตขึ้นเว็บจริงเรียบร้อยแล้ว! (รอประมาณ 30 วินาทีเพื่อให้หน้าเว็บหลักอัปเดต)';
+        statusEl.style.color = '#1a7f37';
+        alert('บันทึกข้อมูลและรูปภาพขึ้นเว็บจริงเรียบร้อยแล้วครับ!');
+      } catch (err) {
+        alert('เกิดข้อผิดพลาดในการบันทึก: ' + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'บันทึกขึ้นเว็บจริงทันที';
+      }
+    });
+
+    initAdmin();
+  </script>
+</body>
+</html>
