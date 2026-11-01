@@ -9,10 +9,55 @@
   <link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@300;400;500;600&family=Cormorant+Garamond:wght@500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <style>
+    /* Login Gate Overlay */
+    .login-gate {
+      position: fixed;
+      inset: 0;
+      background-color: #F8F6F2;
+      z-index: 999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .login-card {
+      background: #FFFFFF;
+      border: 1px solid #E5E5E5;
+      max-width: 400px;
+      width: 100%;
+      padding: 44px 36px;
+      text-align: center;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.05);
+    }
+    .login-logo {
+      height: 76px;
+      width: auto;
+      margin: 0 auto 20px;
+      object-fit: contain;
+    }
+    .login-title {
+      font-size: 18px;
+      font-weight: 500;
+      margin-bottom: 6px;
+    }
+    .login-sub {
+      font-size: 13px;
+      color: #767676;
+      margin-bottom: 24px;
+    }
+    .login-err {
+      color: #b91c1c;
+      font-size: 12.5px;
+      margin-bottom: 12px;
+      display: none;
+    }
+
+    /* Admin Dashboard */
     .admin-wrap {
       max-width: 1180px;
       margin: 0 auto;
       padding: 36px 24px 80px;
+      display: none;
     }
     .admin-grid {
       display: grid;
@@ -103,6 +148,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      flex-wrap: wrap;
       gap: 12px;
       background: #F8F6F2;
       border: 1px solid #E5E5E5;
@@ -135,6 +181,27 @@
 </head>
 <body>
 
+  <!-- Password Login Screen -->
+  <div class="login-gate" id="loginGate">
+    <div class="login-card">
+      <img src="assets/logo-black.png" alt="ARISA JEWELRY" class="login-logo">
+      <h1 class="login-title">เข้าสู่ระบบจัดการร้านค้า</h1>
+      <p class="login-sub">กรุณากรอกรหัสผ่านแอดมินเพื่อจัดการสินค้า</p>
+      <div class="login-err" id="loginErr">รหัสผ่านไม่ถูกต้อง กรุณาลองอีกครั้ง</div>
+      <form id="loginForm">
+        <div class="field-group" style="text-align: left;">
+          <label for="adminPassInput">รหัสผ่านแอดมิน (Password)</label>
+          <input type="password" id="adminPassInput" class="field-input" placeholder="••••••••" required autofocus>
+        </div>
+        <button type="submit" class="sw-btn-black" style="margin-top: 8px;">เข้าสู่ระบบ</button>
+      </form>
+      <div style="margin-top: 20px;">
+        <a href="index.html" style="font-size: 12.5px; color: #767676; text-decoration: underline;">← กลับไปหน้าร้านค้า</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header -->
   <header class="sw-header">
     <div class="sw-header-inner">
       <div class="sw-header-left">
@@ -144,20 +211,21 @@
         <img src="assets/logo-black.png" alt="ARISA JEWELRY" class="sw-brand-logo">
       </a>
       <div class="sw-header-right">
-        <span style="font-size: 13px; font-weight: 500;">ระบบจัดการสินค้า (Admin)</span>
+        <button type="button" class="btn-sm" id="changePassBtn">เปลี่ยนรหัสผ่าน</button>
+        <button type="button" class="btn-sm" id="logoutBtn">ออกจากระบบ</button>
       </div>
     </div>
   </header>
 
-  <main class="admin-wrap">
-    <!-- Top Connection & Publish Bar -->
+  <!-- Main Admin Content (Hidden until authenticated) -->
+  <main class="admin-wrap" id="adminWrap">
     <div class="status-banner">
       <div>
-        <strong>การเชื่อมต่อเว็บจริง (GitHub):</strong>
+        <strong>สถานะระบบเว็บจริง:</strong>
         <span id="connStatus">พร้อมแก้ไขรายการสินค้า</span>
       </div>
       <div style="display: flex; gap: 10px; align-items: center;">
-        <button type="button" class="btn-sm" id="tokenBtn">ตั้งค่ารหัสเชื่อมต่อ (Token)</button>
+        <button type="button" class="btn-sm" id="tokenBtn">ตั้งค่า GitHub Token</button>
         <button type="button" class="btn-publish" id="publishBtn">บันทึกขึ้นเว็บจริงทันที</button>
       </div>
     </div>
@@ -266,25 +334,74 @@
 
   <script>
     const REPO = 'thanatphum2533-cmyk/arisa-jewelry-';
-    let products = [];
-    let pendingImages = {}; // filename -> base64 content (without prefix)
-    let currentImagePath = 'assets/p1.jpg';
+    // Default SHA-256 hash for "arisa925"
+    const DEFAULT_HASH = '4a66952e3973aa38ae612e84d77d6cfb54ffdf430f3200080f1eda6de9e37d82';
 
-    // Check URL hash or localStorage for token
-    if (window.location.hash.startsWith('#token=')) {
-      const t = window.location.hash.replace('#token=', '');
-      localStorage.setItem('aj_gh_token', t);
-      history.replaceState(null, '', window.location.pathname);
+    const loginGate = document.getElementById('loginGate');
+    const adminWrap = document.getElementById('adminWrap');
+    const loginForm = document.getElementById('loginForm');
+    const loginErr = document.getElementById('loginErr');
+
+    async function sha256(str) {
+      const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+      return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
     }
+
+    function checkSession() {
+      if (sessionStorage.getItem('aj_admin_unlocked') === 'true') {
+        loginGate.style.display = 'none';
+        adminWrap.style.display = 'block';
+      } else {
+        loginGate.style.display = 'flex';
+        adminWrap.style.display = 'none';
+      }
+    }
+
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const pass = document.getElementById('adminPassInput').value;
+      const hash = await sha256(pass);
+      const savedHash = localStorage.getItem('aj_custom_pass_hash') || DEFAULT_HASH;
+
+      if (hash === savedHash) {
+        sessionStorage.setItem('aj_admin_unlocked', 'true');
+        loginErr.style.display = 'none';
+        document.getElementById('adminPassInput').value = '';
+        checkSession();
+      } else {
+        loginErr.style.display = 'block';
+      }
+    });
+
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      sessionStorage.removeItem('aj_admin_unlocked');
+      checkSession();
+    });
+
+    document.getElementById('changePassBtn').addEventListener('click', async () => {
+      const newPass = prompt('ตั้งรหัสผ่านแอดมินใหม่ (อย่างน้อย 4 ตัวอักษร):');
+      if (newPass && newPass.trim().length >= 4) {
+        const h = await sha256(newPass.trim());
+        localStorage.setItem('aj_custom_pass_hash', h);
+        alert('เปลี่ยนรหัสผ่านแอดมินเรียบร้อยแล้วครับ!');
+      }
+    });
+
+    checkSession();
+
+    // Admin Catalog Logic
+    let products = [];
+    let pendingImages = {};
+    let currentImagePath = 'assets/p1.jpg';
 
     function updateTokenStatus() {
       const t = localStorage.getItem('aj_gh_token');
       const el = document.getElementById('connStatus');
       if (t) {
-        el.textContent = 'เชื่อมต่อกับ GitHub แล้ว (กดบันทึกขึ้นเว็บจริงได้ทันที)';
+        el.textContent = 'เชื่อมต่อกับ GitHub & Vercel แล้ว (กดบันทึกขึ้นเว็บจริงได้ทันที)';
         el.style.color = '#1a7f37';
       } else {
-        el.textContent = 'ยังไม่ได้ใส่รหัสเชื่อมต่อ GitHub (กดปุ่มตั้งค่ารหัสเชื่อมต่อด้านขวา)';
+        el.textContent = 'ยังไม่ได้ใส่ GitHub Token (กดปุ่ม "ตั้งค่า GitHub Token" ด้านขวา)';
         el.style.color = '#9a6700';
       }
     }
@@ -298,7 +415,6 @@
       }
     });
 
-    // Load initial products
     async function initAdmin() {
       updateTokenStatus();
       try {
@@ -338,7 +454,6 @@
       `).join('');
     }
 
-    // Image Resize & Compression on Upload
     const uploadBox = document.getElementById('uploadBox');
     const imgInput = document.getElementById('imgInput');
     const imgPreview = document.getElementById('imgPreview');
@@ -382,7 +497,6 @@
       reader.readAsDataURL(file);
     });
 
-    // Add or Update Product in List
     document.getElementById('productForm').addEventListener('submit', (e) => {
       e.preventDefault();
       const idx = parseInt(document.getElementById('editIndex').value, 10);
@@ -452,7 +566,6 @@
 
     document.getElementById('cancelEditBtn').addEventListener('click', resetForm);
 
-    // Publish directly to GitHub Repository via REST API
     async function githubPutFile(path, base64Content, message, token) {
       const url = `https://api.github.com/repos/${REPO}/contents/${path}`;
       const headers = {
@@ -489,7 +602,7 @@
     document.getElementById('publishBtn').addEventListener('click', async () => {
       const token = localStorage.getItem('aj_gh_token');
       if (!token) {
-        alert('กรุณากดปุ่ม "ตั้งค่ารหัสเชื่อมต่อ (Token)" ก่อนทำการบันทึกขึ้นเว็บจริงครับ');
+        alert('กรุณากดปุ่ม "ตั้งค่า GitHub Token" ก่อนทำการบันทึกขึ้นเว็บจริงครับ');
         return;
       }
 
@@ -499,19 +612,17 @@
       btn.textContent = 'กำลังอัปโหลดขึ้นเว็บจริง...';
 
       try {
-        // 1. Upload any newly added product images to assets/
         for (const [imgPath, imgObj] of Object.entries(pendingImages)) {
           statusEl.textContent = `กำลังอัปโหลดรูปภาพ ${imgPath}...`;
           await githubPutFile(imgPath, imgObj.base64, `Upload product image ${imgPath}`, token);
         }
         pendingImages = {};
 
-        // 2. Upload updated products.json
         statusEl.textContent = 'กำลังอัปเดตฐานข้อมูลสินค้า products.json...';
         const jsonStr = JSON.stringify(products, null, 2);
         await githubPutFile('products.json', utf8ToBase64(jsonStr), 'Update catalog products.json via Admin Panel', token);
 
-        statusEl.textContent = '✓ อัปเดตขึ้นเว็บจริงเรียบร้อยแล้ว! (รอประมาณ 30 วินาทีเพื่อให้หน้าเว็บหลักอัปเดต)';
+        statusEl.textContent = '✓ อัปเดตขึ้นเว็บจริงเรียบร้อยแล้ว!';
         statusEl.style.color = '#1a7f37';
         alert('บันทึกข้อมูลและรูปภาพขึ้นเว็บจริงเรียบร้อยแล้วครับ!');
       } catch (err) {
