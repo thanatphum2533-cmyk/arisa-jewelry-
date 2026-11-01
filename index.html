@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>เครื่องประดับเงินแท้ 92.5% | ARISA JEWELRY</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@300;400;500;600&family=Cormorant+Garamond:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Top Utility Bar (Swarovski Style) -->
+  <div class="utility-bar">
+    <span>จัดส่งฟรีทั่วประเทศเมื่อสั่งซื้อสินค้าทุกชิ้น · รับประกันเนื้อเงินแท้ 92.5%</span>
+  </div>
+
+  <!-- Main Header (Pure White, Centered Emblem & Spaced Serif Wordmark like Swarovski) -->
+  <header class="sw-header" id="top">
+    <div class="sw-header-inner">
+      <div class="sw-header-left">
+        <span class="sw-Region">TH / ฿ THB</span>
+      </div>
+
+      <a href="#top" class="sw-brand" onclick="setCategory('all')">
+        <img src="assets/logo-black.png" alt="ARISA JEWELRY" class="sw-brand-logo">
+      </a>
+
+      <div class="sw-header-right">
+        <button class="sw-action-link" id="wishlistTrigger" type="button">
+          รายการโปรด (<span id="wishCount">0</span>)
+        </button>
+        <button class="sw-action-link sw-bag-link" id="bagTrigger" type="button">
+          ถุงช้อปปิ้ง (<span id="bagCount">0</span>)
+        </button>
+      </div>
+    </div>
+
+    <!-- Clean Category Navigation Bar -->
+    <nav class="sw-nav">
+      <button class="sw-nav-link active" data-category="all" type="button">เครื่องประดับทั้งหมด</button>
+      <button class="sw-nav-link" data-category="necklaces" type="button">สร้อยคอและจี้</button>
+      <button class="sw-nav-link" data-category="earrings" type="button">ต่างหู</button>
+      <button class="sw-nav-link" data-category="rings" type="button">แหวน</button>
+      <button class="sw-nav-link" data-category="bracelets" type="button">สร้อยข้อมือและกำไล</button>
+    </nav>
+  </header>
+
+  <!-- Category Hero Header (Swarovski c-01 Style) -->
+  <section class="sw-category-hero">
+    <div class="sw-container">
+      <div class="sw-breadcrumb">
+        <a href="#top" onclick="setCategory('all')">หน้าหลัก</a>
+        <span>/</span>
+        <span id="breadcrumbCurrent">เครื่องประดับ</span>
+      </div>
+      <h1 class="sw-category-title" id="categoryTitle">เครื่องประดับ</h1>
+      <p class="sw-category-desc" id="categoryDesc">
+        เติมเต็มสไตล์ในทุกวันด้วยเครื่องประดับเงินแท้ 92.5% ดีไซน์ประณีตเหนือกาลเวลา คัดสรรตั้งแต่สร้อยคอเงินแท้ แหวน ต่างหู ไปจนถึงสร้อยข้อมือที่สะท้อนความงดงามอย่างมีระดับ
+      </p>
+    </div>
+  </section>
+
+  <!-- Sticky Filter Pills & Sort Bar (Swarovski Style) -->
+  <section class="sw-filter-section">
+    <div class="sw-container sw-filter-bar">
+      <div class="sw-pills">
+        <button class="sw-pill active" data-category="all" type="button">ทั้งหมด</button>
+        <button class="sw-pill" data-category="necklaces" type="button">สร้อยคอ</button>
+        <button class="sw-pill" data-category="earrings" type="button">ต่างหู</button>
+        <button class="sw-pill" data-category="rings" type="button">แหวน</button>
+        <button class="sw-pill" data-category="bracelets" type="button">สร้อยข้อมือ</button>
+      </div>
+
+      <div class="sw-sort-group">
+        <span class="sw-result-count" id="resultCount">8 ผลลัพธ์</span>
+        <div class="sw-sort-select-wrap">
+          <label for="sortSelect">เรียงตาม:</label>
+          <select id="sortSelect" class="sw-sort-select">
+            <option value="recommended">แนะนำ</option>
+            <option value="price-asc">ราคา: ต่ำ ไป สูง</option>
+            <option value="price-desc">ราคา: สูง ไป ต่ำ</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Product Grid (4-Column Clean Luxury Tiles) -->
+  <main class="sw-catalog">
+    <div class="sw-container">
+      <div class="sw-product-grid" id="productGrid">
+        <!-- Populated via app.js -->
+      </div>
+    </div>
+  </main>
+
+  <!-- Editorial SEO / Craft Footer Block (Just like bottom of Swarovski category page) -->
+  <section class="sw-seo-block">
+    <div class="sw-container sw-seo-inner">
+      <h2>รังสรรค์ความงดงามด้วยเครื่องประดับเงินแท้ 92.5%</h2>
+      <p>
+        เครื่องประดับทุกชิ้นของ ARISA JEWELRY ผลิตจากเนื้อเงินแท้มาตรฐาน 92.5% (Sterling Silver) ปราศจากนิกเกิล อ่อนโยนต่อผิวแพ้ง่าย ไม่ว่าจะเป็นสร้อยคอเงินแท้ลายอิตาลีที่เปล่งประกายเงางาม ต่างหูห่วงดีไซน์มินิมอล หรือแหวนเงินแท้ขัดเงาที่สวมใส่ได้ในทุกโอกาส
+      </p>
+    </div>
+  </section>
+
+  <!-- Minimal Luxury Footer -->
+  <footer class="sw-footer">
+    <div class="sw-container sw-footer-grid">
+      <div class="sw-footer-col">
+        <h4>เกี่ยวกับ ARISA JEWELRY</h4>
+        <ul>
+          <li>มาตรฐานเนื้อเงินแท้ 92.5%</li>
+          <li>การดูแลรักษาเครื่องประดับเงิน</li>
+          <li>คู่มือการวัดขนาดสร้อยและแหวน</li>
+        </ul>
+      </div>
+      <div class="sw-footer-col">
+        <h4>หมวดหมู่สินค้า</h4>
+        <ul>
+          <li><button onclick="setCategory('necklaces')">สร้อยคอและจี้เงินแท้</button></li>
+          <li><button onclick="setCategory('earrings')">ต่างหูเงินแท้</button></li>
+          <li><button onclick="setCategory('rings')">แหวนเงินแท้</button></li>
+          <li><button onclick="setCategory('bracelets')">สร้อยข้อมือและกำไล</button></li>
+        </ul>
+      </div>
+      <div class="sw-footer-col">
+        <h4>บริการจัดส่งและรับประกัน</h4>
+        <ul>
+          <li>จัดส่งฟรีทุกออเดอร์ทั่วประเทศ</li>
+          <li>บรรจุพร้อมกล่องและผ้าเช็ดเงิน</li>
+          <li>รับประกันเนื้อเงินแท้ 92.5% ทุกชิ้น</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="sw-container sw-footer-bottom">
+      <img src="assets/logo-black.png" alt="ARISA JEWELRY" class="sw-footer-logo-img">
+      <div class="sw-copyright">© 2026 ARISA JEWELRY. สงวนลิขสิทธิ์</div>
+    </div>
+  </footer>
+
+  <!-- Product Quick View Modal -->
+  <div class="sw-modal-backdrop" id="productModal" aria-hidden="true">
+    <div class="sw-modal" role="dialog" aria-modal="true">
+      <button class="sw-modal-close" id="modalClose" type="button">✕</button>
+      <div id="modalBody"></div>
+    </div>
+  </div>
+
+  <!-- Shopping Bag Drawer -->
+  <div class="sw-drawer-backdrop" id="bagDrawer" aria-hidden="true">
+    <aside class="sw-drawer">
+      <div class="sw-drawer-header">
+        <h3>ถุงช้อปปิ้งของคุณ</h3>
+        <button id="drawerClose" type="button">✕</button>
+      </div>
+      <div class="sw-drawer-body" id="bagItemsList"></div>
+      <div class="sw-drawer-footer">
+        <div class="sw-total-line">
+          <span>ยอดรวมสุทธิ (รวมค่าจัดส่งฟรี)</span>
+          <strong id="bagTotalAmount">0 ฿</strong>
+        </div>
+        <form id="checkoutForm" class="sw-checkout-form" style="display: none;">
+          <input type="text" id="custName" placeholder="ชื่อ - นามสกุลผู้รับ" required>
+          <input type="tel" id="custPhone" placeholder="เบอร์โทรศัพท์ติดต่อ" required>
+          <textarea id="custAddress" rows="2" placeholder="ที่อยู่จัดส่ง และขนาด/ความยาวสร้อยที่ต้องการ" required></textarea>
+          <button type="submit" class="sw-btn-black">ยืนยันคำสั่งซื้อ</button>
+        </form>
+        <button id="proceedCheckoutBtn" type="button" class="sw-btn-black">ดำเนินการชำระเงิน</button>
+        <div id="orderSuccessMsg" class="sw-order-success" style="display: none;"></div>
+      </div>
+    </aside>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
