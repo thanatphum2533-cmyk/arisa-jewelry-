@@ -664,7 +664,7 @@ img {
 .sw-footer-socials {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 22px;
   font-size: 13px;
 }
 
@@ -672,19 +672,16 @@ img {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 6px 14px;
-  border: 1px solid rgba(200, 164, 100, 0.35);
-  background-color: rgba(255, 255, 255, 0.04);
   color: var(--sw-gold-light);
-  font-size: 12.5px;
+  font-size: 13px;
   font-weight: 500;
-  transition: all 0.25s ease;
+  transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
 .sw-social-pill:hover {
-  border-color: var(--sw-gold);
-  background-color: rgba(200, 164, 100, 0.14);
-  transform: translateY(-2px);
+  opacity: 0.85;
+  text-decoration: underline;
+  transform: translateY(-1px);
 }
 
 .sw-copyright {
