@@ -423,8 +423,32 @@ window.openInfoGuide = function(tab) {
         <h2 style="font-size: 22px; font-weight: 500; margin-bottom: 6px; color: #121110;">คู่มือการวัดขนาดสร้อยคอและแหวน</h2>
         <p style="font-size: 13.5px; color: #7B7266; margin-bottom: 24px;">เปรียบเทียบขนาดมาตรฐานเพื่อเลือกเครื่องประดับ ARISA JEWELRY ให้พอดีกับคุณ</p>
 
-        <h3 style="font-size: 15.5px; font-weight: 600; color: #9B783B; margin-bottom: 10px;">1. ตารางเทียบความยาวสร้อยคอเงินแท้</h3>
-        <table style="width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 24px;">
+        <h3 style="font-size: 15.5px; font-weight: 600; color: #9B783B; margin-bottom: 12px;">1. แผนภาพและตารางเทียบความยาวสร้อยคอเงินแท้</h3>
+        <div style="background: #F3EDE2; border: 1px solid #DFD5C5; padding: 18px; margin-bottom: 16px; display: flex; justify-content: center;">
+          <svg viewBox="0 0 420 250" style="max-width: 380px; width: 100%; height: auto; font-family: 'Anuphan', sans-serif;">
+            <!-- Neck & Shoulders Silhouette -->
+            <path d="M165,15 C168,52 162,78 145,92 C110,108 55,118 35,148 L35,240 L385,240 L385,148 C365,118 310,108 275,92 C258,78 252,52 255,15" fill="#FBF9F5" stroke="#B8914E" stroke-width="1.6"/>
+            <!-- Collarbones -->
+            <path d="M120,112 Q175,122 202,118 M300,112 Q245,122 218,118" fill="none" stroke="#D4C8B4" stroke-width="1.4" stroke-linecap="round"/>
+            <!-- 16 inch curve -->
+            <path d="M161,80 Q210,138 259,80" fill="none" stroke="#9B783B" stroke-width="2" stroke-dasharray="3,2"/>
+            <circle cx="210" cy="109" r="3" fill="#9B783B"/>
+            <text x="275" y="108" font-size="11.5" fill="#121110" font-weight="600">16" (40 ซม.)</text>
+            <!-- 18 inch curve -->
+            <path d="M155,84 Q210,168 265,84" fill="none" stroke="#121110" stroke-width="2.2"/>
+            <circle cx="210" cy="126" r="3.5" fill="#121110"/>
+            <text x="282" y="130" font-size="11.5" fill="#9B783B" font-weight="600">18" (45 ซม.) · ยอดนิยม</text>
+            <!-- 20 inch curve -->
+            <path d="M148,89 Q210,202 272,89" fill="none" stroke="#9B783B" stroke-width="2"/>
+            <circle cx="210" cy="146" r="3" fill="#9B783B"/>
+            <text x="286" y="152" font-size="11.5" fill="#121110" font-weight="600">20" (50 ซม.)</text>
+            <!-- 22-24 inch curve -->
+            <path d="M140,94 Q210,256 280,94" fill="none" stroke="#7B7266" stroke-width="1.8" stroke-dasharray="4,3"/>
+            <circle cx="210" cy="175" r="3" fill="#7B7266"/>
+            <text x="288" y="180" font-size="11.5" fill="#4A443C" font-weight="500">22"–24" (55–60 ซม.)</text>
+          </svg>
+        </div>
+        <table style="width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 26px;">
           <thead>
             <tr style="background: #F3EDE2; text-align: left;">
               <th style="padding: 9px 12px; border: 1px solid #DFD5C5;">ความยาว (นิ้ว)</th>
@@ -456,7 +480,42 @@ window.openInfoGuide = function(tab) {
           </tbody>
         </table>
 
-        <h3 style="font-size: 15.5px; font-weight: 600; color: #9B783B; margin-bottom: 10px;">2. วิธีวัดขนาดแหวน (มาตรฐานเบอร์ 48 – 60)</h3>
+        <h3 style="font-size: 15.5px; font-weight: 600; color: #9B783B; margin-bottom: 12px;">2. แผนภาพและวิธีวัดขนาดแหวน (มาตรฐานเบอร์ 48 – 60)</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-bottom: 16px;">
+          <div style="background: #F3EDE2; border: 1px solid #DFD5C5; padding: 14px; text-align: center;">
+            <div style="font-size: 12.5px; font-weight: 600; color: #121110; margin-bottom: 8px;">วิธีที่ 1: วัดเส้นผ่านศูนย์กลางด้านใน</div>
+            <svg viewBox="0 0 220 130" style="max-width: 190px; width: 100%; height: auto; font-family: 'Anuphan', sans-serif;">
+              <!-- Outer Ring -->
+              <circle cx="110" cy="62" r="46" fill="none" stroke="#B8914E" stroke-width="8"/>
+              <!-- Inner Ring Boundary -->
+              <circle cx="110" cy="62" r="42" fill="#FBF9F5" stroke="#121110" stroke-width="1.2"/>
+              <!-- Diameter Arrow -->
+              <line x1="68" y1="62" x2="152" y2="62" stroke="#9B783B" stroke-width="2"/>
+              <polygon points="68,62 75,58 75,66" fill="#9B783B"/>
+              <polygon points="152,62 145,58 145,66" fill="#9B783B"/>
+              <!-- Dashed guide lines -->
+              <line x1="68" y1="62" x2="68" y2="115" stroke="#7B7266" stroke-width="1" stroke-dasharray="3,2"/>
+              <line x1="152" y1="62" x2="152" y2="115" stroke="#7B7266" stroke-width="1" stroke-dasharray="3,2"/>
+              <text x="110" y="54" text-anchor="middle" font-size="10.5" fill="#121110" font-weight="600">วัดเฉพาะขอบด้านใน (มม.)</text>
+              <text x="110" y="122" text-anchor="middle" font-size="10" fill="#7B7266">ไม่รวมความหนาตัวเรือนแหวน</text>
+            </svg>
+          </div>
+          <div style="background: #F3EDE2; border: 1px solid #DFD5C5; padding: 14px; text-align: center;">
+            <div style="font-size: 12.5px; font-weight: 600; color: #121110; margin-bottom: 8px;">วิธีที่ 2: วัดความยาวรอบโคนนิ้ว</div>
+            <svg viewBox="0 0 220 130" style="max-width: 190px; width: 100%; height: auto; font-family: 'Anuphan', sans-serif;">
+              <!-- Finger Illustration -->
+              <path d="M88,118 L88,34 C88,18 132,18 132,34 L132,118" fill="#FBF9F5" stroke="#B8914E" stroke-width="1.8"/>
+              <path d="M98,28 C98,21 122,21 122,28 L122,38 C122,42 98,42 98,38 Z" fill="none" stroke="#D4C8B4" stroke-width="1.2"/>
+              <!-- Paper Strip Wrapped Around Finger -->
+              <rect x="83" y="64" width="54" height="14" rx="2" fill="#EAE0CF" stroke="#121110" stroke-width="1.5"/>
+              <line x1="118" y1="62" x2="118" y2="80" stroke="#9B783B" stroke-width="2"/>
+              <!-- Ruler at bottom -->
+              <rect x="35" y="96" width="150" height="16" fill="#FBF9F5" stroke="#7B7266" stroke-width="1.2"/>
+              <path d="M45,96 L45,103 M60,96 L60,101 M75,96 L75,103 M90,96 L90,101 M105,96 L105,103 M120,96 L120,101 M135,96 L135,103 M150,96 L150,101 M165,96 L165,103" stroke="#7B7266" stroke-width="1"/>
+              <text x="110" y="125" text-anchor="middle" font-size="10" fill="#4A443C">พันกระดาษรอบนิ้ว ขีดเส้น แล้ววัด (มม.)</text>
+            </svg>
+          </div>
+        </div>
         <p style="font-size: 13px; color: #4A443C; margin-bottom: 12px;">
           <strong>วิธีที่ 1 (วัดเส้นผ่านศูนย์กลางแหวนวงเดิม):</strong> นำไม้บรรทัดวัดความกว้างด้านในของแหวน (ไม่รวมขอบตัวเรือน) เป็นหน่วยมิลลิเมตร<br>
           <strong>วิธีที่ 2 (วัดรอบนิ้ว):</strong> ใช้กระดาษตัดเป็นเส้นเล็กพันรอบโคนนิ้วพอดี ขีดเส้นบรรจบแล้ววัดความยาวเป็นมิลลิเมตร
