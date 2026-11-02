@@ -644,7 +644,9 @@ img {
 }
 
 .sw-fb-link {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   color: var(--sw-gold-light);
   font-weight: 500;
   transition: color 0.2s, transform 0.2s;
@@ -664,16 +666,25 @@ img {
   align-items: center;
   gap: 12px;
   font-size: 13px;
-  color: var(--sw-gold);
 }
 
-.sw-footer-socials a {
+.sw-social-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border: 1px solid rgba(200, 164, 100, 0.35);
+  background-color: rgba(255, 255, 255, 0.04);
   color: var(--sw-gold-light);
-  transition: opacity 0.2s;
+  font-size: 12.5px;
+  font-weight: 500;
+  transition: all 0.25s ease;
 }
 
-.sw-footer-socials a:hover {
-  text-decoration: underline;
+.sw-social-pill:hover {
+  border-color: var(--sw-gold);
+  background-color: rgba(200, 164, 100, 0.14);
+  transform: translateY(-2px);
 }
 
 .sw-copyright {
