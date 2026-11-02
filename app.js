@@ -316,14 +316,15 @@ function renderCatalog() {
 
   resultCount.textContent = `${list.length} ผลลัพธ์`;
 
-  productGrid.innerHTML = list.map(p => {
+  productGrid.innerHTML = list.map((p, idx) => {
     const isSaved = wishlist.has(p.id);
+    const delay = (idx % 8) * 60;
     return `
-      <article class="sw-card" data-id="${p.id}">
+      <article class="sw-card" data-id="${p.id}" style="animation-delay: ${delay}ms">
         <div class="sw-tile-media">
           ${p.badge ? `<span class="sw-badge">${p.badge}</span>` : ''}
           <button class="sw-wish-btn ${isSaved ? 'saved' : ''}" data-wish="${p.id}" type="button" title="บันทึกในรายการโปรด">
-            ${isSaved ? '♥' : '♡'}
+            ${isSaved ? 'บันทึกแล้ว' : 'บันทึก'}
           </button>
           <img src="${p.image}" alt="${p.name}" class="sw-tile-img" loading="lazy">
         </div>

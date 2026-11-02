@@ -21,6 +21,10 @@
   padding: 0;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   background-color: var(--sw-bg-cream);
   color: var(--sw-black);
@@ -28,6 +32,7 @@ body {
   font-weight: 400;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
 }
 
 a {
@@ -48,15 +53,69 @@ img {
   max-width: 100%;
 }
 
+/* Luxury Motion Keyframes */
+@keyframes goldShimmer {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes heroZoom {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.09); }
+}
+
+@keyframes fadeUpReveal {
+  0% {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes modalScaleIn {
+  0% {
+    opacity: 0;
+    transform: translateY(18px) scale(0.96);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes drawerSlideIn {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@keyframes softPulseGlow {
+  0%, 100% {
+    filter: drop-shadow(0 2px 10px rgba(200, 164, 100, 0.18));
+  }
+  50% {
+    filter: drop-shadow(0 4px 18px rgba(223, 194, 139, 0.42));
+  }
+}
+
 .sw-container {
   max-width: 1360px;
   margin: 0 auto;
   padding: 0 36px;
 }
 
-/* Top Utility Bar (Champagne Gold Ribbon) */
+/* Top Utility Bar (Animated Champagne Gold Shimmer) */
 .utility-bar {
-  background: linear-gradient(90deg, #B8914E 0%, #D7B87C 50%, #B8914E 100%);
+  background: linear-gradient(90deg, #B38B45 0%, #E5CA93 25%, #B8914E 50%, #E5CA93 75%, #B38B45 100%);
+  background-size: 250% 100%;
+  animation: goldShimmer 9s ease-in-out infinite;
   color: #121110;
   text-align: center;
   padding: 8px 20px;
@@ -67,13 +126,15 @@ img {
 
 /* Header (Deep Obsidian & Gold Signature Brand Style) */
 .sw-header {
-  background-color: var(--sw-black);
+  background-color: rgba(18, 17, 16, 0.96);
+  backdrop-filter: blur(10px);
   color: #F5EFE6;
   border-bottom: 1px solid rgba(200, 164, 100, 0.28);
   position: sticky;
   top: 0;
   z-index: 40;
   box-shadow: 0 8px 28px rgba(0, 0, 0, 0.22);
+  transition: all 0.35s ease;
 }
 
 .sw-header-inner {
@@ -95,41 +156,52 @@ img {
   display: flex;
   justify-content: center;
   align-items: center;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.sw-brand:hover {
+  transform: scale(1.04);
 }
 
 .sw-brand-logo {
   height: 82px;
   width: auto;
   object-fit: contain;
-  filter: drop-shadow(0 2px 10px rgba(200, 164, 100, 0.18));
+  animation: softPulseGlow 4.5s ease-in-out infinite;
 }
 
 .sw-footer-logo-img {
   height: 68px;
   width: auto;
   object-fit: contain;
+  transition: transform 0.35s ease;
+}
+
+.sw-footer-logo-img:hover {
+  transform: scale(1.04);
 }
 
 .sw-header-right {
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  gap: 16px;
+  gap: 14px;
 }
 
 .sw-action-link {
   font-size: 13px;
   color: #F5EFE6;
-  padding: 7px 14px;
+  padding: 7px 16px;
   border: 1px solid rgba(200, 164, 100, 0.35);
   background-color: rgba(255, 255, 255, 0.03);
-  transition: all 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .sw-action-link:hover {
   border-color: var(--sw-gold);
   color: var(--sw-gold-light);
-  background-color: rgba(200, 164, 100, 0.1);
+  background-color: rgba(200, 164, 100, 0.12);
+  transform: translateY(-2px);
 }
 
 .sw-bag-link {
@@ -142,9 +214,10 @@ img {
 .sw-bag-link:hover {
   background-color: var(--sw-gold-light);
   color: #121110;
+  box-shadow: 0 6px 18px rgba(200, 164, 100, 0.32);
 }
 
-/* Navigation Links */
+/* Navigation Links with Sliding Gold Underline */
 .sw-nav {
   display: flex;
   justify-content: center;
@@ -155,21 +228,37 @@ img {
 }
 
 .sw-nav-link {
+  position: relative;
   font-size: 14px;
   color: #C7BEB0;
-  padding-bottom: 5px;
-  border-bottom: 2px solid transparent;
-  transition: all 0.2s ease;
+  padding-bottom: 6px;
+  transition: color 0.3s ease;
+}
+
+.sw-nav-link::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 0;
+  height: 2px;
+  background-color: var(--sw-gold);
+  transition: width 0.32s cubic-bezier(0.16, 1, 0.3, 1), left 0.32s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .sw-nav-link:hover,
 .sw-nav-link.active {
   color: var(--sw-gold-light);
-  border-bottom-color: var(--sw-gold);
   font-weight: 500;
 }
 
-/* Category Hero Header with Editorial Banner Image */
+.sw-nav-link:hover::after,
+.sw-nav-link.active::after {
+  width: 100%;
+  left: 0;
+}
+
+/* Category Hero Header with Slow Ken Burns Motion */
 .sw-category-hero {
   position: relative;
   overflow: hidden;
@@ -177,7 +266,7 @@ img {
   color: #F7F2E9;
   padding: 68px 0 74px;
   border-bottom: 2px solid var(--sw-gold);
-  min-height: 310px;
+  min-height: 320px;
   display: flex;
   align-items: center;
 }
@@ -186,6 +275,7 @@ img {
   position: absolute;
   inset: 0;
   z-index: 1;
+  overflow: hidden;
 }
 
 .sw-hero-bg-img {
@@ -193,18 +283,21 @@ img {
   height: 100%;
   object-fit: cover;
   object-position: right center;
+  animation: heroZoom 18s ease-in-out infinite alternate;
+  will-change: transform;
 }
 
 .sw-hero-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, rgba(18, 17, 16, 0.88) 0%, rgba(18, 17, 16, 0.68) 45%, rgba(18, 17, 16, 0.18) 100%);
+  background: linear-gradient(90deg, rgba(18, 17, 16, 0.9) 0%, rgba(18, 17, 16, 0.68) 45%, rgba(18, 17, 16, 0.16) 100%);
 }
 
 .sw-hero-content {
   position: relative;
   z-index: 2;
   width: 100%;
+  animation: fadeUpReveal 0.75s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .sw-breadcrumb {
@@ -240,6 +333,7 @@ img {
   margin-bottom: 12px;
   letter-spacing: -0.01em;
   text-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
+  transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 .sw-category-desc {
@@ -248,6 +342,7 @@ img {
   max-width: 620px;
   line-height: 1.8;
   text-shadow: 0 1px 8px rgba(0, 0, 0, 0.4);
+  transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 /* Filter Pills & Sort Bar (Warm Champagne Sand Bar) */
@@ -277,12 +372,13 @@ img {
   font-size: 13px;
   color: var(--sw-black);
   background-color: var(--sw-bg-white);
-  transition: all 0.2s ease;
+  transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .sw-pill:hover {
   border-color: var(--sw-gold-dark);
   background-color: #FFFDF9;
+  transform: translateY(-2px);
 }
 
 .sw-pill.active {
@@ -291,6 +387,7 @@ img {
   border-color: var(--sw-gold);
   font-weight: 500;
   box-shadow: 0 4px 12px rgba(18, 17, 16, 0.15);
+  transform: translateY(-1px);
 }
 
 .sw-sort-group {
@@ -322,7 +419,7 @@ img {
   outline: none;
 }
 
-/* Product Grid (Warm Cream Catalog with Framed Luxury Cards) */
+/* Product Grid with Staggered Reveal & Shimmer Hover */
 .sw-catalog {
   padding: 48px 0 84px;
   background-color: var(--sw-bg-cream);
@@ -340,13 +437,14 @@ img {
   cursor: pointer;
   background-color: var(--sw-bg-white);
   border: 1px solid var(--sw-border);
-  transition: transform 0.28s ease, box-shadow 0.28s ease, border-color 0.28s ease;
+  animation: fadeUpReveal 0.65s cubic-bezier(0.16, 1, 0.3, 1) both;
+  transition: transform 0.38s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.38s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.38s ease;
 }
 
 .sw-card:hover {
-  transform: translateY(-4px);
+  transform: translateY(-7px);
   border-color: var(--sw-gold);
-  box-shadow: 0 14px 32px rgba(34, 28, 20, 0.1);
+  box-shadow: 0 18px 38px rgba(34, 28, 20, 0.13);
 }
 
 .sw-tile-media {
@@ -357,15 +455,33 @@ img {
   border-bottom: 1px solid var(--sw-border);
 }
 
+/* Subtle luxury light sweep across product image on hover */
+.sw-tile-media::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -120%;
+  width: 65%;
+  height: 100%;
+  background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.32) 50%, rgba(255,255,255,0) 100%);
+  transform: skewX(-22deg);
+  transition: left 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+
+.sw-card:hover .sw-tile-media::after {
+  left: 140%;
+}
+
 .sw-tile-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .sw-card:hover .sw-tile-img {
-  transform: scale(1.05);
+  transform: scale(1.07);
 }
 
 .sw-badge {
@@ -382,21 +498,19 @@ img {
   z-index: 2;
 }
 
+/* Clean Text-Only Save Pill Button (No Heart Icons) */
 .sw-wish-btn {
   position: absolute;
   top: 12px;
   right: 12px;
-  width: 34px;
-  height: 34px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px;
+  padding: 4px 11px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
   color: var(--sw-black);
-  background-color: rgba(251, 249, 245, 0.88);
+  background-color: rgba(251, 249, 245, 0.9);
   border: 1px solid var(--sw-border);
-  border-radius: 50%;
-  transition: all 0.2s;
+  transition: all 0.25s ease;
   z-index: 2;
 }
 
@@ -410,7 +524,6 @@ img {
   background-color: var(--sw-black);
   color: var(--sw-gold-light);
   border-color: var(--sw-gold);
-  font-weight: 600;
 }
 
 .sw-tile-info {
@@ -425,6 +538,7 @@ img {
   font-weight: 500;
   color: var(--sw-black);
   line-height: 1.45;
+  transition: color 0.25s ease;
 }
 
 .sw-card:hover .sw-tile-title {
@@ -515,12 +629,13 @@ img {
 
 .sw-footer-col button {
   color: #BDB3A4;
-  transition: color 0.2s;
+  transition: color 0.2s, transform 0.2s;
 }
 
 .sw-footer-col button:hover {
   text-decoration: underline;
   color: var(--sw-gold-light);
+  transform: translateX(3px);
 }
 
 .sw-footer-bottom {
@@ -535,13 +650,13 @@ img {
   color: #8E8475;
 }
 
-/* Modal & Drawer */
+/* Modal & Drawer with Smooth Motion */
 .sw-modal-backdrop,
 .sw-drawer-backdrop {
   position: fixed;
   inset: 0;
   background-color: rgba(14, 13, 12, 0.65);
-  backdrop-filter: blur(3px);
+  backdrop-filter: blur(4px);
   z-index: 100;
   display: none;
   align-items: center;
@@ -562,18 +677,26 @@ img {
   position: relative;
   overflow: hidden;
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+  animation: modalScaleIn 0.38s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .sw-modal-close {
   position: absolute;
   top: 16px;
   right: 20px;
-  font-size: 18px;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 6px 14px;
   z-index: 10;
-  width: 36px;
-  height: 36px;
   background-color: var(--sw-black);
   color: var(--sw-gold-light);
+  border: 1px solid rgba(200, 164, 100, 0.45);
+  transition: all 0.2s ease;
+}
+
+.sw-modal-close:hover {
+  background-color: var(--sw-gold);
+  color: var(--sw-black);
 }
 
 .sw-modal-grid {
@@ -606,12 +729,14 @@ img {
   font-size: 14px;
   font-weight: 500;
   text-align: center;
-  transition: all 0.2s;
+  transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .sw-btn-black:hover {
   background-color: var(--sw-gold);
   color: var(--sw-black);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(200, 164, 100, 0.28);
 }
 
 .sw-drawer-backdrop {
@@ -627,6 +752,7 @@ img {
   flex-direction: column;
   justify-content: space-between;
   border-left: 1px solid var(--sw-gold);
+  animation: drawerSlideIn 0.38s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .sw-drawer-header {
@@ -646,7 +772,15 @@ img {
 
 .sw-drawer-header button {
   color: var(--sw-gold-light);
-  font-size: 18px;
+  font-size: 12.5px;
+  padding: 4px 12px;
+  border: 1px solid rgba(200, 164, 100, 0.4);
+  transition: all 0.2s ease;
+}
+
+.sw-drawer-header button:hover {
+  background-color: var(--sw-gold);
+  color: var(--sw-black);
 }
 
 .sw-drawer-body {
