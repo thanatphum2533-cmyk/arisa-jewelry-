@@ -238,13 +238,17 @@
           <input type="hidden" id="editIndex" value="-1">
 
           <div class="field-group">
-            <label>รูปภาพสินค้า (คลิกเพื่อเลือกรูปจากเครื่อง)</label>
+            <label>รูปภาพสินค้า (คลิกเลือกรูป / ลากวาง / กด Ctrl+V วางรูปที่แคปจาก TikTok ได้ทันที)</label>
             <div class="img-upload-box" id="uploadBox">
               <img id="imgPreview" class="img-preview" alt="Preview">
               <div id="uploadPrompt" style="font-size: 13px; color: #545454;">
-                + คลิกเลือกรูปภาพสินค้า (.jpg / .png)
+                + คลิกเลือกรูป หรือกด <strong>Ctrl + V</strong> เพื่อวางรูปจาก TikTok
               </div>
               <input type="file" id="imgInput" accept="image/*" style="display: none;">
+            </div>
+            <div style="display: flex; gap: 6px; margin-top: 8px;">
+              <input type="url" id="imgUrlInput" class="field-input" placeholder="หรือวางลิงก์รูปภาพโดยตรง (https://...)" style="font-size: 12.5px; padding: 7px 10px;">
+              <button type="button" class="btn-sm" id="fetchImgUrlBtn" style="white-space: nowrap; background: #121110; color: #DFC28B; border-color: #C8A464;">ดึงรูป</button>
             </div>
           </div>
 
@@ -474,43 +478,83 @@
     const imgInput = document.getElementById('imgInput');
     const imgPreview = document.getElementById('imgPreview');
 
-    uploadBox.addEventListener('click', () => imgInput.click());
+    function processProductImageSource(srcUrl) {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const maxDim = 900;
+        let w = img.width;
+        let h = img.height;
+        if (w > maxDim || h > maxDim) {
+          if (w > h) { h = Math.round(h * maxDim / w); w = maxDim; }
+          else { w = Math.round(w * maxDim / h); h = maxDim; }
+        }
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, w, h);
 
-    imgInput.addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.88);
+        imgPreview.src = dataUrl;
+        imgPreview.style.display = 'block';
 
-      const reader = new FileReader();
-      reader.onload = (ev) => {
-        const img = new Image();
-        img.onload = () => {
-          const canvas = document.createElement('canvas');
-          const maxDim = 900;
-          let w = img.width;
-          let h = img.height;
-          if (w > maxDim || h > maxDim) {
-            if (w > h) { h = Math.round(h * maxDim / w); w = maxDim; }
-            else { w = Math.round(w * maxDim / h); h = maxDim; }
-          }
-          canvas.width = w;
-          canvas.height = h;
-          const ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0, w, h);
-
-          const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
-          imgPreview.src = dataUrl;
-          imgPreview.style.display = 'block';
-
-          const filename = 'assets/item-' + Date.now() + '.jpg';
-          currentImagePath = filename;
-          pendingImages[filename] = {
-            base64: dataUrl.split(',')[1],
-            previewUrl: dataUrl
-          };
+        const filename = 'assets/item-' + Date.now() + '.jpg';
+        currentImagePath = filename;
+        pendingImages[filename] = {
+          base64: dataUrl.split(',')[1],
+          previewUrl: dataUrl
         };
-        img.src = ev.target.result;
       };
+      img.onerror = () => {
+        alert('ไม่สามารถดึงรูปจากลิงก์นี้ได้โดยตรง กรุณาคลิกขวาคัดลอกรูปภาพแล้วกด Ctrl+V เพื่อวางแทนครับ');
+      };
+      img.src = srcUrl;
+    }
+
+    function handleImageFile(file) {
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => processProductImageSource(ev.target.result);
       reader.readAsDataURL(file);
+    }
+
+    uploadBox.addEventListener('click', () => imgInput.click());
+    imgInput.addEventListener('change', (e) => handleImageFile(e.target.files[0]));
+
+    // Support Drag & Drop onto uploadBox
+    uploadBox.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      uploadBox.style.borderColor = '#C8A464';
+    });
+    uploadBox.addEventListener('dragleave', () => {
+      uploadBox.style.borderColor = '#999999';
+    });
+    uploadBox.addEventListener('drop', (e) => {
+      e.preventDefault();
+      uploadBox.style.borderColor = '#999999';
+      if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+        handleImageFile(e.dataTransfer.files[0]);
+      }
+    });
+
+    // Support Ctrl+V Paste image anywhere on Admin page
+    window.addEventListener('paste', (e) => {
+      const items = (e.clipboardData || e.originalEvent.clipboardData).items;
+      for (const item of items) {
+        if (item.type.indexOf('image') === 0) {
+          const blob = item.getAsFile();
+          handleImageFile(blob);
+          break;
+        }
+      }
+    });
+
+    // Support direct image URL fetch
+    document.getElementById('fetchImgUrlBtn').addEventListener('click', () => {
+      const url = document.getElementById('imgUrlInput').value.trim();
+      if (!url) return;
+      processProductImageSource(url);
     });
 
     const bannerUploadBox = document.getElementById('bannerUploadBox');
