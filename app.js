@@ -393,6 +393,11 @@ function openModal(id) {
               <span style="color: #767676;">ขนาด / ความยาว</span>
               <span>${p.sizing}</span>
             </div>
+            <div style="padding-top: 10px; text-align: right;">
+              <button type="button" onclick="openInfoGuide('size')" style="font-size: 12px; color: #9B783B; text-decoration: underline;">
+                ดูคู่มือการวัดขนาดสร้อยและแหวน
+              </button>
+            </div>
           </div>
         </div>
         <button class="sw-btn-black" id="modalAddBtn" type="button">
@@ -409,6 +414,102 @@ function openModal(id) {
     bagDrawer.classList.add('open');
   });
 }
+
+window.openInfoGuide = function(tab) {
+  let content = '';
+  if (tab === 'size') {
+    content = `
+      <div style="padding: 36px 32px; max-height: 82vh; overflow-y: auto;">
+        <h2 style="font-size: 22px; font-weight: 500; margin-bottom: 6px; color: #121110;">คู่มือการวัดขนาดสร้อยคอและแหวน</h2>
+        <p style="font-size: 13.5px; color: #7B7266; margin-bottom: 24px;">เปรียบเทียบขนาดมาตรฐานเพื่อเลือกเครื่องประดับ ARISA JEWELRY ให้พอดีกับคุณ</p>
+
+        <h3 style="font-size: 15.5px; font-weight: 600; color: #9B783B; margin-bottom: 10px;">1. ตารางเทียบความยาวสร้อยคอเงินแท้</h3>
+        <table style="width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 24px;">
+          <thead>
+            <tr style="background: #F3EDE2; text-align: left;">
+              <th style="padding: 9px 12px; border: 1px solid #DFD5C5;">ความยาว (นิ้ว)</th>
+              <th style="padding: 9px 12px; border: 1px solid #DFD5C5;">ความยาว (ซม.)</th>
+              <th style="padding: 9px 12px; border: 1px solid #DFD5C5;">ระดับเมื่อสวมใส่</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="padding: 8px 12px; border: 1px solid #DFD5C5; font-weight: 500;">16 นิ้ว</td>
+              <td style="padding: 8px 12px; border: 1px solid #DFD5C5;">40 ซม.</td>
+              <td style="padding: 8px 12px; border: 1px solid #DFD5C5;">พอดีฐานลำคอ / ไหปลาร้าบน (ลุคมินิมอล)</td>
+            </tr>
+            <tr>
+              <td style="padding: 8px 12px; border: 1px solid #DFD5C5; font-weight: 500;">18 นิ้ว</td>
+              <td style="padding: 8px 12px; border: 1px solid #DFD5C5;">45 ซม.</td>
+              <td style="padding: 8px 12px; border: 1px solid #DFD5C5;">ระดับไหปลาร้า (ขนาดมาตรฐานยอดนิยม ใส่คู่กับจี้สวยที่สุด)</td>
+            </tr>
+            <tr>
+              <td style="padding: 8px 12px; border: 1px solid #DFD5C5; font-weight: 500;">20 นิ้ว</td>
+              <td style="padding: 8px 12px; border: 1px solid #DFD5C5;">50 ซม.</td>
+              <td style="padding: 8px 12px; border: 1px solid #DFD5C5;">ต่ำกว่าไหปลาร้าลงมาเล็กน้อย (เหมาะห้อยจี้พระ หรือผู้ชายสวมใส่)</td>
+            </tr>
+            <tr>
+              <td style="padding: 8px 12px; border: 1px solid #DFD5C5; font-weight: 500;">22 – 24 นิ้ว</td>
+              <td style="padding: 8px 12px; border: 1px solid #DFD5C5;">55 – 60 ซม.</td>
+              <td style="padding: 8px 12px; border: 1px solid #DFD5C5;">ระดับกลางอก (สวมหัวได้โดยไม่ต้องปลดตะขอในรุ่น 24 นิ้ว)</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3 style="font-size: 15.5px; font-weight: 600; color: #9B783B; margin-bottom: 10px;">2. วิธีวัดขนาดแหวน (มาตรฐานเบอร์ 48 – 60)</h3>
+        <p style="font-size: 13px; color: #4A443C; margin-bottom: 12px;">
+          <strong>วิธีที่ 1 (วัดเส้นผ่านศูนย์กลางแหวนวงเดิม):</strong> นำไม้บรรทัดวัดความกว้างด้านในของแหวน (ไม่รวมขอบตัวเรือน) เป็นหน่วยมิลลิเมตร<br>
+          <strong>วิธีที่ 2 (วัดรอบนิ้ว):</strong> ใช้กระดาษตัดเป็นเส้นเล็กพันรอบโคนนิ้วพอดี ขีดเส้นบรรจบแล้ววัดความยาวเป็นมิลลิเมตร
+        </p>
+        <table style="width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 10px;">
+          <thead>
+            <tr style="background: #F3EDE2; text-align: left;">
+              <th style="padding: 8px 12px; border: 1px solid #DFD5C5;">ไซส์แหวน</th>
+              <th style="padding: 8px 12px; border: 1px solid #DFD5C5;">รอบนิ้ว (มม.)</th>
+              <th style="padding: 8px 12px; border: 1px solid #DFD5C5;">เส้นผ่านศูนย์กลางด้านใน (มม.)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td style="padding: 7px 12px; border: 1px solid #DFD5C5; font-weight: 500;">Size 48</td><td style="padding: 7px 12px; border: 1px solid #DFD5C5;">48 มม.</td><td style="padding: 7px 12px; border: 1px solid #DFD5C5;">15.3 มม.</td></tr>
+            <tr><td style="padding: 7px 12px; border: 1px solid #DFD5C5; font-weight: 500;">Size 50</td><td style="padding: 7px 12px; border: 1px solid #DFD5C5;">50 มม.</td><td style="padding: 7px 12px; border: 1px solid #DFD5C5;">15.9 มม.</td></tr>
+            <tr><td style="padding: 7px 12px; border: 1px solid #DFD5C5; font-weight: 500;">Size 52</td><td style="padding: 7px 12px; border: 1px solid #DFD5C5;">52 มม.</td><td style="padding: 7px 12px; border: 1px solid #DFD5C5;">16.5 มม.</td></tr>
+            <tr><td style="padding: 7px 12px; border: 1px solid #DFD5C5; font-weight: 500;">Size 54</td><td style="padding: 7px 12px; border: 1px solid #DFD5C5;">54 มม.</td><td style="padding: 7px 12px; border: 1px solid #DFD5C5;">17.2 มม.</td></tr>
+            <tr><td style="padding: 7px 12px; border: 1px solid #DFD5C5; font-weight: 500;">Size 56</td><td style="padding: 7px 12px; border: 1px solid #DFD5C5;">56 มม.</td><td style="padding: 7px 12px; border: 1px solid #DFD5C5;">17.8 มม.</td></tr>
+            <tr><td style="padding: 7px 12px; border: 1px solid #DFD5C5; font-weight: 500;">Size 58</td><td style="padding: 7px 12px; border: 1px solid #DFD5C5;">58 มม.</td><td style="padding: 7px 12px; border: 1px solid #DFD5C5;">18.4 มม.</td></tr>
+            <tr><td style="padding: 7px 12px; border: 1px solid #DFD5C5; font-weight: 500;">Size 60</td><td style="padding: 7px 12px; border: 1px solid #DFD5C5;">60 มม.</td><td style="padding: 7px 12px; border: 1px solid #DFD5C5;">19.1 มม.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    `;
+  } else if (tab === 'care') {
+    content = `
+      <div style="padding: 36px 32px; max-height: 82vh; overflow-y: auto;">
+        <h2 style="font-size: 22px; font-weight: 500; margin-bottom: 8px; color: #121110;">การดูแลรักษาเครื่องประดับเงินแท้ 92.5%</h2>
+        <p style="font-size: 13.5px; color: #7B7266; margin-bottom: 20px;">เคล็ดลับดูแลเครื่องประดับเงินแท้ให้เงางามเหมือนใหม่อยู่เสมอ</p>
+        <div style="font-size: 14px; color: #4A443C; line-height: 1.85; display: flex; flex-direction: column; gap: 12px;">
+          <div><strong>1. สวมใส่ได้ทุกวันและโดนน้ำได้:</strong> เนื้อเงินแท้ 92.5% สามารถใส่อาบน้ำหรือล้างมือได้ตามปกติ ไม่ลอกเป็นแผ่นเหมือนงานชุบทั่วไป</div>
+          <div><strong>2. การทำความสะอาดหลังสวมใส่:</strong> หากโดนเหงื่อ ครีม หรือน้ำหอม แนะนำให้ล้างด้วยน้ำสะอาดหรือน้ำยาล้างจานอ่อนๆ ซับให้แห้ง แล้วใช้ผ้าเช็ดเงินขัดเบาๆ ความเงางามจะกลับคืนมาทันที</div>
+          <div><strong>3. การเก็บรักษาเมื่อไม่ได้สวมใส่:</strong> ควรเก็บใส่ซองซิปล็อกหรือกล่องเครื่องประดับที่มิดชิด เพื่อลดการสัมผัสกับออกซิเจนในอากาศซึ่งเป็นสาเหตุที่ทำให้เงินหมองช้าลง</div>
+        </div>
+      </div>
+    `;
+  } else {
+    content = `
+      <div style="padding: 36px 32px; max-height: 82vh; overflow-y: auto;">
+        <h2 style="font-size: 22px; font-weight: 500; margin-bottom: 8px; color: #121110;">มาตรฐานเนื้อเงินแท้ 92.5% (Sterling Silver)</h2>
+        <p style="font-size: 13.5px; color: #7B7266; margin-bottom: 20px;">การรับประกันคุณภาพชิ้นงานทุกชิ้นจาก ARISA JEWELRY</p>
+        <div style="font-size: 14px; color: #4A443C; line-height: 1.85; display: flex; flex-direction: column; gap: 12px;">
+          <div><strong>สัดส่วนเงินบริสุทธิ์มาตรฐานสากล:</strong> เครื่องประดับเงินแท้ 92.5% ประกอบด้วยแร่เงินบริสุทธิ์ 92.5% ผสมโลหะอัลลอยคุณภาพสูงอีก 7.5% เพื่อให้ตัวเรือนมีความแข็งแรงคงรูป ไม่บุบหรือบิดงอง่าย และประทับตรา <strong>925</strong> บนตัวเรือน</div>
+          <div><strong>ปราศจากนิกเกิล (Nickel-Free):</strong> อ่อนโยนต่อผู้ที่มีผิวบอบบางหรือแพ้เครื่องประดับง่าย ไม่ก่อให้เกิดอาการคันหรือระคายเคืองผิว</div>
+          <div><strong>งานเลี่ยมกรอบพระเงินแท้กันน้ำ 100%:</strong> สำหรับหมวดจี้พระ ทุกองค์เลี่ยมในกรอบเงินแท้ 92.5% อัดพลาสติกกันน้ำอย่างประณีตโดยช่างฝีมือ</div>
+        </div>
+      </div>
+    `;
+  }
+
+  modalBody.innerHTML = content;
+  productModal.classList.add('open');
+};
 
 function addToBag(id) {
   const p = PRODUCTS.find(x => x.id === id);
