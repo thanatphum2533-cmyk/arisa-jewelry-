@@ -636,17 +636,44 @@ img {
   transition: color 0.2s, transform 0.2s;
 }
 
-.sw-footer-col button:hover {
+.sw-footer-col button:hover,
+.sw-fb-link:hover {
   text-decoration: underline;
   color: var(--sw-gold-light);
   transform: translateX(3px);
 }
 
+.sw-fb-link {
+  display: inline-block;
+  color: var(--sw-gold-light);
+  font-weight: 500;
+  transition: color 0.2s, transform 0.2s;
+}
+
 .sw-footer-bottom {
-  padding-top: 32px;
+  padding-top: 28px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.sw-footer-socials {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+  color: var(--sw-gold);
+}
+
+.sw-footer-socials a {
+  color: var(--sw-gold-light);
+  transition: opacity 0.2s;
+}
+
+.sw-footer-socials a:hover {
+  text-decoration: underline;
 }
 
 .sw-copyright {
