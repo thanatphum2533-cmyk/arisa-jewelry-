@@ -311,6 +311,18 @@
           <button type="submit" class="sw-btn-black" id="saveItemBtn">เพิ่มลงรายการสินค้า</button>
           <button type="button" class="btn-sm" id="cancelEditBtn" style="width: 100%; margin-top: 8px; display: none;">ยกเลิกการแก้ไข</button>
         </form>
+
+        <!-- Hero Banner Uploader -->
+        <div style="margin-top: 32px; padding-top: 24px; border-top: 1px solid #E5E5E5;">
+          <h2 style="font-size: 16px; margin-bottom: 12px; border: none; padding: 0;">เปลี่ยนรูปภาพปกแบนเนอร์ด้านบนเว็บ (Hero Banner)</h2>
+          <div class="img-upload-box" id="bannerUploadBox">
+            <img id="bannerPreview" src="assets/hero-banner.jpg" class="img-preview" style="display: block; max-height: 140px;" alt="Banner Preview">
+            <div style="font-size: 12.5px; color: #545454;">
+              + คลิกเพื่อเลือกรูปแบนเนอร์ใหม่ (แนวนอน)
+            </div>
+            <input type="file" id="bannerInput" accept="image/*" style="display: none;">
+          </div>
+        </div>
       </section>
 
       <!-- Right: Current Product List -->
@@ -495,6 +507,47 @@
             base64: dataUrl.split(',')[1],
             previewUrl: dataUrl
           };
+        };
+        img.src = ev.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+
+    const bannerUploadBox = document.getElementById('bannerUploadBox');
+    const bannerInput = document.getElementById('bannerInput');
+    const bannerPreview = document.getElementById('bannerPreview');
+
+    bannerUploadBox.addEventListener('click', () => bannerInput.click());
+
+    bannerInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const maxDim = 1400;
+          let w = img.width;
+          let h = img.height;
+          if (w > maxDim || h > maxDim) {
+            if (w > h) { h = Math.round(h * maxDim / w); w = maxDim; }
+            else { w = Math.round(w * maxDim / h); h = maxDim; }
+          }
+          canvas.width = w;
+          canvas.height = h;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, w, h);
+
+          const dataUrl = canvas.toDataURL('image/jpeg', 0.88);
+          bannerPreview.src = dataUrl;
+
+          pendingImages['assets/hero-banner.jpg'] = {
+            base64: dataUrl.split(',')[1],
+            previewUrl: dataUrl
+          };
+          document.getElementById('connStatus').textContent = 'เลือกรูปแบนเนอร์ใหม่แล้ว — กรุณากดปุ่ม "บันทึกขึ้นเว็บจริงทันที" ด้านขวา';
         };
         img.src = ev.target.result;
       };

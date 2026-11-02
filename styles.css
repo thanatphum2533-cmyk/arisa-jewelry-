@@ -169,18 +169,47 @@ img {
   font-weight: 500;
 }
 
-/* Category Hero Header (Luxury Dark Obsidian & Gold Glow) */
+/* Category Hero Header with Editorial Banner Image */
 .sw-category-hero {
-  background: radial-gradient(circle at 80% 20%, rgba(200, 164, 100, 0.22) 0%, rgba(24, 22, 20, 0) 55%),
-              linear-gradient(135deg, #1E1A16 0%, #121110 100%);
+  position: relative;
+  overflow: hidden;
+  background-color: #1A1612;
   color: #F7F2E9;
-  padding: 44px 0 50px;
+  padding: 68px 0 74px;
   border-bottom: 2px solid var(--sw-gold);
+  min-height: 310px;
+  display: flex;
+  align-items: center;
+}
+
+.sw-hero-bg-wrap {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.sw-hero-bg-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: right center;
+}
+
+.sw-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(18, 17, 16, 0.88) 0%, rgba(18, 17, 16, 0.68) 45%, rgba(18, 17, 16, 0.18) 100%);
+}
+
+.sw-hero-content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
 }
 
 .sw-breadcrumb {
   font-size: 12px;
-  color: #A89E8E;
+  color: #D4C8B4;
   display: flex;
   gap: 8px;
   margin-bottom: 14px;
@@ -196,26 +225,29 @@ img {
   font-size: 11px;
   letter-spacing: 0.16em;
   color: var(--sw-gold-light);
-  border: 1px solid rgba(200, 164, 100, 0.45);
+  border: 1px solid rgba(200, 164, 100, 0.6);
   padding: 4px 12px;
   margin-bottom: 12px;
-  background-color: rgba(200, 164, 100, 0.08);
+  background-color: rgba(18, 17, 16, 0.55);
+  backdrop-filter: blur(4px);
 }
 
 .sw-category-title {
   font-family: var(--font-sans);
-  font-size: clamp(26px, 3vw, 36px);
+  font-size: clamp(28px, 3.2vw, 40px);
   font-weight: 500;
   color: #FFFDF9;
   margin-bottom: 12px;
   letter-spacing: -0.01em;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
 }
 
 .sw-category-desc {
-  font-size: 14.5px;
-  color: #D4CBBF;
-  max-width: 740px;
+  font-size: 15px;
+  color: #EFE8DC;
+  max-width: 620px;
   line-height: 1.8;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.4);
 }
 
 /* Filter Pills & Sort Bar (Warm Champagne Sand Bar) */
