@@ -1,4 +1,4 @@
-let PRODUCTS = [
+﻿let PRODUCTS = [
   {
     "id": "AJ-N01",
     "category": "necklaces",
