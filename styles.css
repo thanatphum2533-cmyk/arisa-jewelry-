@@ -598,14 +598,16 @@ img {
 .sw-footer {
   background-color: var(--sw-black);
   color: #D8CFC2;
-  padding: 60px 0 36px;
+  padding: 40px 0 28px;
 }
 
 .sw-footer-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 40px;
-  padding-bottom: 48px;
+  gap: 28px;
+  max-width: 960px;
+  margin: 0 auto;
+  padding-bottom: 32px;
   border-bottom: 1px solid rgba(200, 164, 100, 0.22);
 }
 
@@ -613,8 +615,8 @@ img {
   font-size: 13.5px;
   font-weight: 600;
   color: var(--sw-gold-light);
-  margin-bottom: 18px;
-  letter-spacing: 0.04em;
+  margin-bottom: 10px;
+  letter-spacing: 0.03em;
 }
 
 .sw-footer-col ul {
@@ -624,11 +626,13 @@ img {
 .sw-footer-col li {
   font-size: 13px;
   color: #BDB3A4;
-  margin-bottom: 10px;
+  line-height: 1.4;
+  margin-bottom: 5px;
 }
 
 .sw-footer-col button {
   color: #BDB3A4;
+  line-height: 1.4;
   transition: color 0.2s, transform 0.2s;
 }
 
