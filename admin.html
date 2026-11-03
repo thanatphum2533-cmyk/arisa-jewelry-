@@ -573,7 +573,8 @@
       }
 
       try {
-        const res = await fetch('products.json?t=' + Date.now());
+        let res = await fetch('/api/products?t=' + Date.now());
+      if (!res.ok) res = await fetch('products.json?t=' + Date.now());
         if (res.ok) {
           products = await res.json();
           renderTable();

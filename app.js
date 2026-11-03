@@ -660,7 +660,10 @@ checkoutForm.addEventListener('submit', (e) => {
 
 async function loadProductsFromServer() {
   try {
-    const res = await fetch('products.json?t=' + Date.now());
+    let res = await fetch('/api/products?t=' + Date.now());
+    if (!res.ok) {
+      res = await fetch('products.json?t=' + Date.now());
+    }
     if (res.ok) {
       const data = await res.json();
       if (Array.isArray(data) && data.length > 0) {
@@ -668,7 +671,12 @@ async function loadProductsFromServer() {
       }
     }
   } catch (e) {
-    // Fallback to built-in PRODUCTS if opened via file://
+    try {
+      const res = await fetch('products.json?t=' + Date.now());
+      if (res.ok) {
+        PRODUCTS = await res.json();
+      }
+    } catch (err) {}
   }
   renderCatalog();
   renderBag();

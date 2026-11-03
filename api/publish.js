@@ -1,5 +1,7 @@
-// api/publish.js - Vercel Serverless Function
+// api/publish.js - Vercel Serverless Function (Supabase Real-time + GitHub Assets)
 const REPO = 'thanatphum2533-cmyk/arisa-jewelry-';
+const SUPABASE_URL = process.env.SUPABASE_URL;
+const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY;
 
 async function githubPutFile(path, base64Content, message, token) {
   const url = `https://api.github.com/repos/${REPO}/contents/${path}`;
@@ -17,9 +19,7 @@ async function githubPutFile(path, base64Content, message, token) {
       const existing = await getRes.json();
       sha = existing.sha;
     }
-  } catch (e) {
-    // New file, no SHA
-  }
+  } catch (e) {}
 
   const body = { message, content: base64Content };
   if (sha) body.sha = sha;
@@ -55,23 +55,42 @@ module.exports = async (req, res) => {
   }
 
   try {
-    const token = process.env.GITHUB_TOKEN || req.headers['x-github-token'];
-    if (!token) {
-      return res.status(500).json({
-        success: false,
-        error: 'GITHUB_TOKEN is not configured in Vercel environment variables.'
-      });
-    }
-
     const { products, images } = req.body || {};
 
     if (!Array.isArray(products)) {
       return res.status(400).json({ success: false, error: 'products array is required' });
     }
 
-    // 1. Upload any pending images
+    // 1. Sync to Supabase in Real-time (if configured)
+    let supabaseSuccess = false;
+    if (SUPABASE_URL && SUPABASE_KEY) {
+      try {
+        const sbHeaders = {
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`,
+          'Content-Type': 'application/json',
+          'Prefer': 'resolution=merge-duplicates'
+        };
+
+        const sbRes = await fetch(`${SUPABASE_URL}/rest/v1/products`, {
+          method: 'POST',
+          headers: sbHeaders,
+          body: JSON.stringify(products)
+        });
+
+        if (sbRes.ok) {
+          supabaseSuccess = true;
+        }
+      } catch (sbErr) {
+        console.error('Supabase sync error:', sbErr);
+      }
+    }
+
+    // 2. Upload any pending images to GitHub
+    const token = process.env.GITHUB_TOKEN || req.headers['x-github-token'];
     const uploadedImages = [];
-    if (images && typeof images === 'object') {
+
+    if (token && images && typeof images === 'object') {
       const entries = Array.isArray(images)
         ? images
         : Object.entries(images).map(([p, data]) => ({
@@ -81,30 +100,41 @@ module.exports = async (req, res) => {
 
       for (const item of entries) {
         if (item.path && item.base64) {
-          await githubPutFile(
-            item.path,
-            item.base64,
-            `Upload image: ${item.path} via Admin Panel`,
-            token
-          );
-          uploadedImages.push(item.path);
+          try {
+            await githubPutFile(
+              item.path,
+              item.base64,
+              `Upload image: ${item.path} via Admin Panel`,
+              token
+            );
+            uploadedImages.push(item.path);
+          } catch (imgErr) {
+            console.error('Image upload error:', imgErr);
+          }
         }
       }
     }
 
-    // 2. Upload updated products.json
-    const jsonStr = JSON.stringify(products, null, 2);
-    const jsonBase64 = utf8ToBase64(jsonStr);
-    await githubPutFile(
-      'products.json',
-      jsonBase64,
-      `Update catalog (${products.length} items) via Admin Panel`,
-      token
-    );
+    // 3. Backup products.json to GitHub
+    if (token) {
+      try {
+        const jsonStr = JSON.stringify(products, null, 2);
+        const jsonBase64 = utf8ToBase64(jsonStr);
+        await githubPutFile(
+          'products.json',
+          jsonBase64,
+          `Update catalog (${products.length} items) via Admin Panel`,
+          token
+        );
+      } catch (ghErr) {
+        console.error('GitHub products.json backup error:', ghErr);
+      }
+    }
 
     return res.status(200).json({
       success: true,
       message: 'Published successfully',
+      supabaseSynced: supabaseSuccess,
       itemCount: products.length,
       uploadedImages
     });
