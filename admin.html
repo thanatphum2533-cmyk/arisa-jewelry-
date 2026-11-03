@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="th">
 <head>
   <meta charset="UTF-8">
@@ -352,6 +352,18 @@
 
   <script>
     const REPO = 'thanatphum2533-cmyk/arisa-jewelry-';
+    function getGithubToken() {
+      // Check localStorage first, or URL hash #token=...
+      if (window.location.hash.startsWith('#token=')) {
+        const t = window.location.hash.replace('#token=', '');
+        localStorage.setItem('aj_gh_token', t);
+        history.replaceState(null, '', window.location.pathname);
+        return t;
+      }
+      return localStorage.getItem('aj_gh_token') || '';
+    }
+    
+    
     // Default SHA-256 hash for "arisa925"
     const DEFAULT_HASH = '4a66952e3973aa38ae612e84d77d6cfb54ffdf430f3200080f1eda6de9e37d82';
 
@@ -413,7 +425,7 @@
     let currentImagePath = 'assets/p1.jpg';
 
     function updateTokenStatus() {
-      const t = localStorage.getItem('aj_gh_token');
+      const t = getGithubToken();
       const el = document.getElementById('connStatus');
       if (t) {
         el.textContent = 'เชื่อมต่อกับ GitHub & Vercel แล้ว (กดบันทึกขึ้นเว็บจริงได้ทันที)';
@@ -425,7 +437,7 @@
     }
 
     document.getElementById('tokenBtn').addEventListener('click', () => {
-      const current = localStorage.getItem('aj_gh_token') || '';
+      const current = getGithubToken() || '';
       const input = prompt('วางรหัสเชื่อมต่อ GitHub (Personal Access Token) สำหรับอัปเดตเว็บจริง:', current);
       if (input !== null) {
         localStorage.setItem('aj_gh_token', input.trim());
@@ -433,7 +445,24 @@
       }
     });
 
+        function saveLocalDraft() {
+      try {
+        localStorage.setItem('aj_products_draft', JSON.stringify(products));
+      } catch(e) {}
+    }
+
     async function initAdmin() {
+      // Load from local draft first if exists
+      const localDraft = localStorage.getItem('aj_products_draft');
+      if (localDraft) {
+        try {
+          const parsed = JSON.parse(localDraft);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            products = parsed;
+            renderTable();
+          }
+        } catch(e) {}
+      }
       updateTokenStatus();
       try {
         const res = await fetch('products.json?t=' + Date.now());
@@ -622,6 +651,7 @@
 
       resetForm();
       renderTable();
+      saveLocalDraft();
       document.getElementById('connStatus').textContent = 'มีการแก้ไขที่ยังไม่ได้กดบันทึกขึ้นเว็บจริง — กรุณากดปุ่ม "บันทึกขึ้นเว็บจริงทันที" ด้านขวา';
     });
 
@@ -652,6 +682,7 @@
       if (!confirm('ต้องการลบสินค้าชิ้นนี้ออกจากร้านใช่หรือไม่?')) return;
       products.splice(idx, 1);
       renderTable();
+      saveLocalDraft();
       document.getElementById('connStatus').textContent = 'ลบรายการแล้ว — กรุณากดปุ่ม "บันทึกขึ้นเว็บจริงทันที" เพื่ออัปเดตหน้าเว็บ';
     };
 
@@ -701,7 +732,7 @@
     }
 
     document.getElementById('publishBtn').addEventListener('click', async () => {
-      const token = localStorage.getItem('aj_gh_token');
+      const token = getGithubToken();
       if (!token) {
         alert('กรุณากดปุ่ม "ตั้งค่า GitHub Token" ก่อนทำการบันทึกขึ้นเว็บจริงครับ');
         return;
@@ -723,6 +754,7 @@
         const jsonStr = JSON.stringify(products, null, 2);
         await githubPutFile('products.json', utf8ToBase64(jsonStr), 'Update catalog products.json via Admin Panel', token);
 
+        localStorage.removeItem('aj_products_draft');
         statusEl.textContent = '✓ อัปเดตขึ้นเว็บจริงเรียบร้อยแล้ว!';
         statusEl.style.color = '#1a7f37';
         alert('บันทึกข้อมูลและรูปภาพขึ้นเว็บจริงเรียบร้อยแล้วครับ!');
