@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="th">
 <head>
   <meta charset="UTF-8">
@@ -56,26 +56,29 @@
     .admin-wrap {
       max-width: 1180px;
       margin: 0 auto;
-      padding: 36px 24px 80px;
+      padding: 28px 18px 80px;
       display: none;
     }
     .admin-grid {
       display: grid;
-      grid-template-columns: 380px 1fr;
-      gap: 32px;
+      grid-template-columns: 400px 1fr;
+      gap: 28px;
       align-items: start;
     }
     .admin-panel {
       background: #FFFFFF;
       border: 1px solid #E5E5E5;
-      padding: 28px;
+      padding: 24px;
     }
     .admin-panel h2 {
-      font-size: 18px;
+      font-size: 17px;
       font-weight: 500;
-      margin-bottom: 18px;
+      margin-bottom: 16px;
       padding-bottom: 12px;
       border-bottom: 1px solid #E5E5E5;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
     .field-group {
       margin-bottom: 14px;
@@ -94,6 +97,11 @@
       font: inherit;
       font-size: 13.5px;
       background: #FFFFFF;
+      box-sizing: border-box;
+    }
+    .field-input:focus {
+      border-color: #C8A464;
+      outline: none;
     }
     .field-row {
       display: grid;
@@ -101,22 +109,26 @@
       gap: 10px;
     }
     .img-upload-box {
-      border: 1px dashed #999999;
-      background: #F8F6F2;
-      padding: 18px;
+      border: 2px dashed #C8A464;
+      background: #FBF9F5;
+      padding: 20px 16px;
       text-align: center;
       cursor: pointer;
-      position: relative;
+      border-radius: 4px;
+      transition: all 0.2s;
     }
     .img-upload-box:hover {
+      background: #F5EFE6;
       border-color: #141414;
     }
     .img-preview {
       width: 100%;
-      max-height: 200px;
-      object-fit: cover;
-      margin-bottom: 10px;
+      max-height: 220px;
+      object-fit: contain;
+      margin-bottom: 12px;
       display: none;
+      background: #FFFFFF;
+      border: 1px solid #E5E5E5;
     }
     .admin-table {
       width: 100%;
@@ -124,10 +136,10 @@
     }
     .admin-table th,
     .admin-table td {
-      padding: 12px;
+      padding: 10px 12px;
       border-bottom: 1px solid #E5E5E5;
       text-align: left;
-      font-size: 13.5px;
+      font-size: 13px;
     }
     .admin-table th {
       font-size: 12px;
@@ -136,13 +148,14 @@
       background: #F8F6F2;
     }
     .admin-thumb {
-      width: 54px;
-      height: 54px;
+      width: 52px;
+      height: 52px;
       object-fit: cover;
       background: #F3F2F0;
+      border: 1px solid #E5E5E5;
     }
     .status-banner {
-      padding: 12px 16px;
+      padding: 14px 18px;
       margin-bottom: 24px;
       font-size: 13.5px;
       display: flex;
@@ -150,17 +163,22 @@
       align-items: center;
       flex-wrap: wrap;
       gap: 12px;
-      background: #F8F6F2;
+      background: #FFFFFF;
       border: 1px solid #E5E5E5;
+      border-left: 4px solid #1a7f37;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.02);
     }
     .btn-sm {
-      padding: 5px 10px;
+      padding: 6px 12px;
       font-size: 12px;
       border: 1px solid #CCCCCC;
-      margin-right: 4px;
+      background: #FFFFFF;
+      cursor: pointer;
+      transition: all 0.2s;
     }
     .btn-sm:hover {
       border-color: #141414;
+      background: #F8F6F2;
     }
     .btn-publish {
       background: #141414;
@@ -168,13 +186,73 @@
       padding: 11px 22px;
       font-size: 13.5px;
       font-weight: 500;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
     }
     .btn-publish:hover {
-      opacity: 0.85;
+      opacity: 0.9;
     }
+    .btn-publish:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    .btn-action-primary {
+      width: 100%;
+      background: #121110;
+      color: #DFC28B;
+      border: 1px solid #C8A464;
+      padding: 12px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    .btn-action-primary:hover {
+      background: #222;
+    }
+    .btn-action-secondary {
+      width: 100%;
+      background: #F8F6F2;
+      color: #333333;
+      border: 1px solid #CCCCCC;
+      padding: 9px;
+      font-size: 13px;
+      cursor: pointer;
+      margin-top: 8px;
+    }
+    .btn-action-secondary:hover {
+      background: #EFECE6;
+    }
+
+    /* Modal / Progress Overlay */
+    .save-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .save-modal {
+      background: #FFFFFF;
+      padding: 32px 28px;
+      max-width: 420px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.2);
+    }
+
     @media (max-width: 900px) {
       .admin-grid {
         grid-template-columns: 1fr;
+      }
+      .admin-wrap {
+        padding: 16px 12px 60px;
       }
     }
   </style>
@@ -186,7 +264,7 @@
     <div class="login-card">
       <img src="assets/logo-black.png" alt="ARISA JEWELRY" class="login-logo">
       <h1 class="login-title">เข้าสู่ระบบจัดการร้านค้า</h1>
-      <p class="login-sub">กรุณากรอกรหัสผ่านแอดมินเพื่อจัดการสินค้า</p>
+      <p class="login-sub">ระบบจัดการสินค้า ARISA JEWELRY</p>
       <div class="login-err" id="loginErr">รหัสผ่านไม่ถูกต้อง กรุณาลองอีกครั้ง</div>
       <form id="loginForm">
         <div class="field-group" style="text-align: left;">
@@ -211,8 +289,8 @@
         <img src="assets/logo-gold.png" alt="ARISA JEWELRY" class="sw-brand-logo">
       </a>
       <div class="sw-header-right">
-        <button type="button" class="btn-sm" id="changePassBtn" style="color:#F5EFE6;border-color:rgba(200,164,100,0.4);">เปลี่ยนรหัสผ่าน</button>
-        <button type="button" class="btn-sm" id="logoutBtn" style="color:#F5EFE6;border-color:rgba(200,164,100,0.4);">ออกจากระบบ</button>
+        <button type="button" class="btn-sm" id="changePassBtn" style="color:#F5EFE6;border-color:rgba(200,164,100,0.4);background:transparent;">เปลี่ยนรหัสผ่าน</button>
+        <button type="button" class="btn-sm" id="logoutBtn" style="color:#F5EFE6;border-color:rgba(200,164,100,0.4);background:transparent;">ออกจากระบบ</button>
       </div>
     </div>
   </header>
@@ -221,33 +299,42 @@
   <main class="admin-wrap" id="adminWrap">
     <div class="status-banner">
       <div>
-        <strong>สถานะระบบเว็บจริง:</strong>
-        <span id="connStatus">พร้อมแก้ไขรายการสินค้า</span>
+        <div style="font-weight: 500; display: flex; align-items: center; gap: 8px;">
+          <span style="display:inline-block; width:10px; height:10px; border-radius:50%; background:#1a7f37;"></span>
+          <span id="connStatus">พร้อมแก้ไขและอัปเดตเว็บจริง (ระบบเชื่อมต่ออัตโนมัติ)</span>
+        </div>
+        <div style="font-size: 12px; color: #767676; margin-top: 3px;">
+          รองรับการใช้งานจากคอมพิวเตอร์และมือถือทุกเครื่อง
+        </div>
       </div>
       <div style="display: flex; gap: 10px; align-items: center;">
-        <button type="button" class="btn-sm" id="tokenBtn">ตั้งค่า GitHub Token</button>
-        <button type="button" class="btn-publish" id="publishBtn">บันทึกขึ้นเว็บจริงทันที</button>
+        <button type="button" class="btn-sm" id="tokenBtn" title="สำหรับตั้งค่าหรือตรวจสอบ Token ด้วยตัวเอง">⚙️ ตั้งค่า Token</button>
+        <button type="button" class="btn-publish" id="publishBtn">🚀 บันทึกขึ้นเว็บจริงทันที</button>
       </div>
     </div>
 
     <div class="admin-grid">
       <!-- Left: Add / Edit Product Form -->
       <section class="admin-panel">
-        <h2 id="formHeading">เพิ่มสินค้าใหม่</h2>
+        <h2 id="formHeading">
+          <span>เพิ่มสินค้าใหม่</span>
+        </h2>
         <form id="productForm">
           <input type="hidden" id="editIndex" value="-1">
 
           <div class="field-group">
-            <label>รูปภาพสินค้า (คลิกเลือกรูป / ลากวาง / กด Ctrl+V วางรูปที่แคปจาก TikTok ได้ทันที)</label>
+            <label>รูปภาพสินค้า (แตะเลือกรูปจากมือถือ / ลากวาง / หรือกด Ctrl+V วางรูป)</label>
             <div class="img-upload-box" id="uploadBox">
               <img id="imgPreview" class="img-preview" alt="Preview">
-              <div id="uploadPrompt" style="font-size: 13px; color: #545454;">
-                + คลิกเลือกรูป หรือกด <strong>Ctrl + V</strong> เพื่อวางรูปจาก TikTok
+              <div id="uploadPrompt" style="font-size: 13.5px; color: #333333; line-height: 1.5;">
+                <div style="font-size: 24px; margin-bottom: 4px;">📸</div>
+                <strong>แตะที่นี่เพื่อเลือกรูปจากมือถือ / คอมพิวเตอร์</strong>
+                <div style="font-size: 12px; color: #767676; margin-top: 4px;">หรือกด Ctrl + V เพื่อวางรูปภาพ</div>
               </div>
               <input type="file" id="imgInput" accept="image/*" style="display: none;">
             </div>
             <div style="display: flex; gap: 6px; margin-top: 8px;">
-              <input type="url" id="imgUrlInput" class="field-input" placeholder="หรือวางลิงก์รูปภาพโดยตรง (https://...)" style="font-size: 12.5px; padding: 7px 10px;">
+              <input type="url" id="imgUrlInput" class="field-input" placeholder="หรือวางลิงก์รูปภาพโดยตรง (https://...)" style="font-size: 12px; padding: 7px 10px;">
               <button type="button" class="btn-sm" id="fetchImgUrlBtn" style="white-space: nowrap; background: #121110; color: #DFC28B; border-color: #C8A464;">ดึงรูป</button>
             </div>
           </div>
@@ -312,17 +399,24 @@
             <textarea id="pDesc" rows="3" class="field-input" placeholder="อธิบายจุดเด่นของชิ้นงาน..."></textarea>
           </div>
 
-          <button type="submit" class="sw-btn-black" id="saveItemBtn">เพิ่มลงรายการสินค้า</button>
-          <button type="button" class="btn-sm" id="cancelEditBtn" style="width: 100%; margin-top: 8px; display: none;">ยกเลิกการแก้ไข</button>
+          <button type="submit" class="btn-action-primary" id="saveAndPublishBtn">
+            🚀 บันทึกและอัปเดตขึ้นเว็บจริงทันที
+          </button>
+          <button type="button" class="btn-action-secondary" id="saveItemDraftBtn">
+            ➕ พักไว้ในตารางก่อน (บันทึกขึ้นเว็บภายหลัง)
+          </button>
+          <button type="button" class="btn-sm" id="cancelEditBtn" style="width: 100%; margin-top: 8px; display: none;">
+            ยกเลิกการแก้ไข
+          </button>
         </form>
 
         <!-- Hero Banner Uploader -->
         <div style="margin-top: 32px; padding-top: 24px; border-top: 1px solid #E5E5E5;">
-          <h2 style="font-size: 16px; margin-bottom: 12px; border: none; padding: 0;">เปลี่ยนรูปภาพปกแบนเนอร์ด้านบนเว็บ (Hero Banner)</h2>
+          <h2 style="font-size: 15px; margin-bottom: 12px; border: none; padding: 0;">เปลี่ยนรูปภาพปกแบนเนอร์ (Hero Banner)</h2>
           <div class="img-upload-box" id="bannerUploadBox">
             <img id="bannerPreview" src="assets/hero-banner.jpg" class="img-preview" style="display: block; max-height: 140px;" alt="Banner Preview">
             <div style="font-size: 12.5px; color: #545454;">
-              + คลิกเพื่อเลือกรูปแบนเนอร์ใหม่ (แนวนอน)
+              + แตะเพื่อเลือกรูปภาพแบนเนอร์ใหม่
             </div>
             <input type="file" id="bannerInput" accept="image/*" style="display: none;">
           </div>
@@ -331,7 +425,10 @@
 
       <!-- Right: Current Product List -->
       <section class="admin-panel">
-        <h2>รายการสินค้าทั้งหมดในร้าน (<span id="totalItems">0</span> ชิ้น)</h2>
+        <h2>
+          <span>รายการสินค้าทั้งหมดในร้าน (<span id="totalItems">0</span> ชิ้น)</span>
+          <button type="button" class="btn-sm" id="refreshBtn" title="โหลดข้อมูลล่าสุดจากเว็บจริง">🔄 รีเฟรช</button>
+        </h2>
         <div style="overflow-x: auto;">
           <table class="admin-table">
             <thead>
@@ -350,10 +447,23 @@
     </div>
   </main>
 
+  <!-- Modal / Saving Overlay -->
+  <div class="save-overlay" id="saveOverlay">
+    <div class="save-modal">
+      <div style="font-size: 36px; margin-bottom: 12px;" id="saveModalIcon">⏳</div>
+      <h3 style="font-size: 18px; margin-bottom: 8px;" id="saveModalTitle">กำลังบันทึกข้อมูลขึ้นเว็บจริง...</h3>
+      <p style="font-size: 13.5px; color: #666666; margin-bottom: 20px;" id="saveModalText">
+        กำลังอัปโหลดรูปภาพและบันทึกฐานข้อมูลสินค้า กรุณารอสักครู่
+      </p>
+      <button type="button" class="btn-publish" id="saveModalCloseBtn" style="display: none; margin: 0 auto;">ตกลง</button>
+    </div>
+  </div>
+
   <script>
     const REPO = 'thanatphum2533-cmyk/arisa-jewelry-';
+    
+    // Check GitHub token from URL or localStorage (optional fallback)
     function getGithubToken() {
-      // 1. Check URL hash: #token=...
       if (window.location.hash && window.location.hash.includes('token=')) {
         const match = window.location.hash.match(/token=([a-zA-Z0-9_]+)/);
         if (match && match[1]) {
@@ -362,7 +472,6 @@
           return match[1];
         }
       }
-      // 2. Check URL query string: ?token=...
       const urlParams = new URLSearchParams(window.location.search);
       const queryToken = urlParams.get('token');
       if (queryToken) {
@@ -370,11 +479,9 @@
         history.replaceState(null, '', window.location.pathname);
         return queryToken;
       }
-      // 3. Check localStorage
       return localStorage.getItem('aj_gh_token') || '';
     }
-    
-    
+
     // Default SHA-256 hash for "arisa925"
     const DEFAULT_HASH = '4a66952e3973aa38ae612e84d77d6cfb54ffdf430f3200080f1eda6de9e37d82';
 
@@ -430,59 +537,59 @@
 
     checkSession();
 
-    // Admin Catalog Logic
+    // Catalog state
     let products = [];
     let pendingImages = {};
     let currentImagePath = 'assets/p1.jpg';
 
-    function updateTokenStatus() {
-      const t = getGithubToken();
-      const el = document.getElementById('connStatus');
-      if (t) {
-        el.textContent = 'เชื่อมต่อกับ GitHub & Vercel แล้ว (กดบันทึกขึ้นเว็บจริงได้ทันที)';
-        el.style.color = '#1a7f37';
-      } else {
-        el.textContent = 'ยังไม่ได้ใส่ GitHub Token (กดปุ่ม "ตั้งค่า GitHub Token" ด้านขวา)';
-        el.style.color = '#9a6700';
-      }
-    }
-
     document.getElementById('tokenBtn').addEventListener('click', () => {
       const current = getGithubToken() || '';
-      const input = prompt('วางรหัสเชื่อมต่อ GitHub (Personal Access Token) สำหรับอัปเดตเว็บจริง:', current);
+      const input = prompt('ใส่ GitHub Token (ไม่จำเป็น หากใช้งานผ่าน Vercel):', current);
       if (input !== null) {
         localStorage.setItem('aj_gh_token', input.trim());
-        updateTokenStatus();
+        alert('บันทึกการตั้งค่าแล้ว');
       }
     });
 
-        function saveLocalDraft() {
+    function saveLocalDraft() {
       try {
         localStorage.setItem('aj_products_draft', JSON.stringify(products));
       } catch(e) {}
     }
 
-    async function initAdmin() {
-      // Load from local draft first if exists
-      const localDraft = localStorage.getItem('aj_products_draft');
-      if (localDraft) {
-        try {
-          const parsed = JSON.parse(localDraft);
-          if (Array.isArray(parsed) && parsed.length > 0) {
-            products = parsed;
-            renderTable();
-          }
-        } catch(e) {}
+    async function initAdmin(forceRefresh = false) {
+      if (!forceRefresh) {
+        const localDraft = localStorage.getItem('aj_products_draft');
+        if (localDraft) {
+          try {
+            const parsed = JSON.parse(localDraft);
+            if (Array.isArray(parsed) && parsed.length > 0) {
+              products = parsed;
+              renderTable();
+              return;
+            }
+          } catch(e) {}
+        }
       }
-      updateTokenStatus();
+
       try {
         const res = await fetch('products.json?t=' + Date.now());
         if (res.ok) {
           products = await res.json();
+          renderTable();
         }
-      } catch (e) {}
-      renderTable();
+      } catch (e) {
+        console.error('Fetch products error:', e);
+      }
     }
+
+    document.getElementById('refreshBtn').addEventListener('click', () => {
+      if (confirm('ต้องการโหลดข้อมูลล่าสุดจากเซิร์ฟเวอร์ใช่หรือไม่? (การแก้ไขที่ยังไม่ได้บันทึกอาจถูกแทนที่)')) {
+        localStorage.removeItem('aj_products_draft');
+        pendingImages = {};
+        initAdmin(true);
+      }
+    });
 
     const CAT_LABELS = {
       necklaces: 'สร้อยคอ',
@@ -498,7 +605,7 @@
       const tbody = document.getElementById('adminTableBody');
       tbody.innerHTML = products.map((p, idx) => `
         <tr>
-          <td><img src="${p.image}" class="admin-thumb" alt="${p.name}"></td>
+          <td><img src="${p.image}" class="admin-thumb" alt="${p.name}" onerror="this.src='assets/p1.jpg'"></td>
           <td>
             <div style="font-size: 11.5px; color: #767676;">${p.id} ${p.badge ? `· <strong>[${p.badge}]</strong>` : ''}</div>
             <div style="font-weight: 500;">${p.name}</div>
@@ -508,47 +615,64 @@
           <td style="font-weight: 500;">${Number(p.price).toLocaleString()} ฿</td>
           <td style="white-space: nowrap;">
             <button type="button" class="btn-sm" onclick="editItem(${idx})">แก้ไข</button>
-            <button type="button" class="btn-sm" onclick="deleteItem(${idx})">ลบ</button>
+            <button type="button" class="btn-sm" onclick="deleteItem(${idx})" style="color: #b91c1c;">ลบ</button>
           </td>
         </tr>
       `).join('');
     }
 
+    // Image Upload Handling
     const uploadBox = document.getElementById('uploadBox');
     const imgInput = document.getElementById('imgInput');
     const imgPreview = document.getElementById('imgPreview');
+    const uploadPrompt = document.getElementById('uploadPrompt');
 
     function processProductImageSource(srcUrl) {
+      uploadPrompt.innerHTML = '<div style="font-size: 13px; color: #C8A464;">⏳ กำลังประมวลผลรูปภาพ...</div>';
+      
       const img = new Image();
-      img.crossOrigin = 'anonymous';
+      // Only set crossOrigin for remote http(s) URLs, NEVER for data: URLs or blobs!
+      if (typeof srcUrl === 'string' && (srcUrl.startsWith('http://') || srcUrl.startsWith('https://'))) {
+        img.crossOrigin = 'anonymous';
+      }
+
       img.onload = () => {
-        const canvas = document.createElement('canvas');
-        const maxDim = 900;
-        let w = img.width;
-        let h = img.height;
-        if (w > maxDim || h > maxDim) {
-          if (w > h) { h = Math.round(h * maxDim / w); w = maxDim; }
-          else { w = Math.round(w * maxDim / h); h = maxDim; }
+        try {
+          const canvas = document.createElement('canvas');
+          const maxDim = 1000;
+          let w = img.width;
+          let h = img.height;
+          if (w > maxDim || h > maxDim) {
+            if (w > h) { h = Math.round(h * maxDim / w); w = maxDim; }
+            else { w = Math.round(w * maxDim / h); h = maxDim; }
+          }
+          canvas.width = w;
+          canvas.height = h;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, w, h);
+
+          const dataUrl = canvas.toDataURL('image/jpeg', 0.88);
+          imgPreview.src = dataUrl;
+          imgPreview.style.display = 'block';
+
+          const filename = 'assets/item-' + Date.now() + '.jpg';
+          currentImagePath = filename;
+          pendingImages[filename] = {
+            base64: dataUrl.split(',')[1],
+            previewUrl: dataUrl
+          };
+
+          uploadPrompt.innerHTML = '<div style="font-size: 13px; color: #1a7f37;">✓ อัปโหลดรูปภาพเรียบร้อย (แตะเพื่อเปลี่ยนรูปใหม่)</div>';
+        } catch (err) {
+          uploadPrompt.innerHTML = '<div style="font-size: 13px; color: #b91c1c;">⚠️ ไม่สามารถแปลงรูปภาพได้ กรุณาลองใหม่อีกครั้ง</div>';
         }
-        canvas.width = w;
-        canvas.height = h;
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(img, 0, 0, w, h);
-
-        const dataUrl = canvas.toDataURL('image/jpeg', 0.88);
-        imgPreview.src = dataUrl;
-        imgPreview.style.display = 'block';
-
-        const filename = 'assets/item-' + Date.now() + '.jpg';
-        currentImagePath = filename;
-        pendingImages[filename] = {
-          base64: dataUrl.split(',')[1],
-          previewUrl: dataUrl
-        };
       };
+
       img.onerror = () => {
-        alert('ไม่สามารถดึงรูปจากลิงก์นี้ได้โดยตรง กรุณาคลิกขวาคัดลอกรูปภาพแล้วกด Ctrl+V เพื่อวางแทนครับ');
+        uploadPrompt.innerHTML = '<div style="font-size: 13px; color: #b91c1c;">⚠️ โหลดรูปไม่สำเร็จ กรุณาเลือกไฟล์ภาพจากเครื่อง</div>';
+        alert('ไม่สามารถโหลดรูปภาพนี้ได้ กรุณาแตะเลือกไฟล์รูปภาพจากเครื่องแทนครับ');
       };
+
       img.src = srcUrl;
     }
 
@@ -559,26 +683,33 @@
       reader.readAsDataURL(file);
     }
 
-    uploadBox.addEventListener('click', () => imgInput.click());
-    imgInput.addEventListener('change', (e) => handleImageFile(e.target.files[0]));
+    // Stop propagation so clicking input does not re-trigger uploadBox click
+    imgInput.addEventListener('click', (e) => e.stopPropagation());
 
-    // Support Drag & Drop onto uploadBox
+    uploadBox.addEventListener('click', () => imgInput.click());
+    imgInput.addEventListener('change', (e) => {
+      if (e.target.files && e.target.files[0]) {
+        handleImageFile(e.target.files[0]);
+      }
+    });
+
+    // Drag & Drop
     uploadBox.addEventListener('dragover', (e) => {
       e.preventDefault();
-      uploadBox.style.borderColor = '#C8A464';
+      uploadBox.style.borderColor = '#141414';
     });
     uploadBox.addEventListener('dragleave', () => {
-      uploadBox.style.borderColor = '#999999';
+      uploadBox.style.borderColor = '#C8A464';
     });
     uploadBox.addEventListener('drop', (e) => {
       e.preventDefault();
-      uploadBox.style.borderColor = '#999999';
+      uploadBox.style.borderColor = '#C8A464';
       if (e.dataTransfer.files && e.dataTransfer.files[0]) {
         handleImageFile(e.dataTransfer.files[0]);
       }
     });
 
-    // Support Ctrl+V Paste image anywhere on Admin page
+    // Ctrl+V Paste anywhere
     window.addEventListener('paste', (e) => {
       const items = (e.clipboardData || e.originalEvent.clipboardData).items;
       for (const item of items) {
@@ -590,23 +721,24 @@
       }
     });
 
-    // Support direct image URL fetch
+    // Direct Image URL fetch
     document.getElementById('fetchImgUrlBtn').addEventListener('click', () => {
       const url = document.getElementById('imgUrlInput').value.trim();
       if (!url) return;
       processProductImageSource(url);
     });
 
+    // Hero Banner
     const bannerUploadBox = document.getElementById('bannerUploadBox');
     const bannerInput = document.getElementById('bannerInput');
     const bannerPreview = document.getElementById('bannerPreview');
 
+    bannerInput.addEventListener('click', (e) => e.stopPropagation());
     bannerUploadBox.addEventListener('click', () => bannerInput.click());
 
     bannerInput.addEventListener('change', (e) => {
       const file = e.target.files[0];
       if (!file) return;
-
       const reader = new FileReader();
       reader.onload = (ev) => {
         const img = new Image();
@@ -638,38 +770,63 @@
       reader.readAsDataURL(file);
     });
 
-    document.getElementById('productForm').addEventListener('submit', (e) => {
-      e.preventDefault();
-      const idx = parseInt(document.getElementById('editIndex').value, 10);
-      const item = {
-        id: document.getElementById('pId').value.trim(),
+    // Read form data
+    function getFormData() {
+      const pId = document.getElementById('pId').value.trim();
+      const pName = document.getElementById('pName').value.trim();
+      const pPrice = Number(document.getElementById('pPrice').value);
+      if (!pId || !pName || isNaN(pPrice)) {
+        alert('กรุณากรอกรหัสสินค้า, ชื่อสินค้า และราคาให้ครบถ้วน');
+        return null;
+      }
+      return {
+        id: pId,
         category: document.getElementById('pCat').value,
-        name: document.getElementById('pName').value.trim(),
+        name: pName,
         sub: document.getElementById('pSub').value.trim(),
-        price: Number(document.getElementById('pPrice').value),
+        price: pPrice,
         badge: document.getElementById('pBadge').value,
         weight: document.getElementById('pWeight').value.trim(),
         sizing: document.getElementById('pSizing').value.trim(),
         desc: document.getElementById('pDesc').value.trim(),
         image: currentImagePath
       };
+    }
 
+    function applyFormToProducts() {
+      const item = getFormData();
+      if (!item) return false;
+      const idx = parseInt(document.getElementById('editIndex').value, 10);
       if (idx >= 0) {
         products[idx] = item;
       } else {
         products.unshift(item);
       }
-
       resetForm();
       renderTable();
       saveLocalDraft();
-      document.getElementById('connStatus').textContent = 'มีการแก้ไขที่ยังไม่ได้กดบันทึกขึ้นเว็บจริง — กรุณากดปุ่ม "บันทึกขึ้นเว็บจริงทันที" ด้านขวา';
+      return true;
+    }
+
+    // Button: Save item as draft
+    document.getElementById('saveItemDraftBtn').addEventListener('click', () => {
+      if (applyFormToProducts()) {
+        alert('เพิ่มสินค้าลงในตารางเรียบร้อยแล้วครับ หากต้องการให้แสดงบนหน้าเว็บจริง อย่าลืมกดปุ่ม "บันทึกขึ้นเว็บจริงทันที" ด้านบนนะครับ');
+      }
+    });
+
+    // Form submit: Save & publish to live directly!
+    document.getElementById('productForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (applyFormToProducts()) {
+        await publishToLive();
+      }
     });
 
     window.editItem = function(idx) {
       const p = products[idx];
       document.getElementById('editIndex').value = idx;
-      document.getElementById('formHeading').textContent = 'แก้ไขสินค้า: ' + p.id;
+      document.getElementById('formHeading').innerHTML = '<span>แก้ไขสินค้า: ' + p.id + '</span>';
       document.getElementById('pId').value = p.id;
       document.getElementById('pCat').value = p.category;
       document.getElementById('pName').value = p.name;
@@ -683,99 +840,153 @@
       currentImagePath = p.image;
       imgPreview.src = pendingImages[p.image] ? pendingImages[p.image].previewUrl : p.image;
       imgPreview.style.display = 'block';
+      uploadPrompt.innerHTML = '<div style="font-size: 13px; color: #1a7f37;">✓ มีรูปภาพเดิมแล้ว (แตะเพื่อเปลี่ยนรูปใหม่)</div>';
 
-      document.getElementById('saveItemBtn').textContent = 'บันทึกการแก้ไขรายการนี้';
+      document.getElementById('saveAndPublishBtn').textContent = '🚀 บันทึกการแก้ไขและอัปเดตเว็บจริงทันที';
       document.getElementById('cancelEditBtn').style.display = 'block';
       window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
-    window.deleteItem = function(idx) {
-      if (!confirm('ต้องการลบสินค้าชิ้นนี้ออกจากร้านใช่หรือไม่?')) return;
+    window.deleteItem = async function(idx) {
+      if (!confirm(`ต้องการลบสินค้า "${products[idx].name}" ออกจากร้านใช่หรือไม่?`)) return;
       products.splice(idx, 1);
       renderTable();
       saveLocalDraft();
-      document.getElementById('connStatus').textContent = 'ลบรายการแล้ว — กรุณากดปุ่ม "บันทึกขึ้นเว็บจริงทันที" เพื่ออัปเดตหน้าเว็บ';
+      if (confirm('ลบออกจากตารางแล้ว ต้องการบันทึกขึ้นเว็บจริงทันทีเลยหรือไม่?')) {
+        await publishToLive();
+      }
     };
 
     function resetForm() {
       document.getElementById('productForm').reset();
       document.getElementById('editIndex').value = '-1';
-      document.getElementById('formHeading').textContent = 'เพิ่มสินค้าใหม่';
-      document.getElementById('saveItemBtn').textContent = 'เพิ่มลงรายการสินค้า';
+      document.getElementById('formHeading').innerHTML = '<span>เพิ่มสินค้าใหม่</span>';
+      document.getElementById('saveAndPublishBtn').textContent = '🚀 บันทึกและอัปเดตขึ้นเว็บจริงทันที';
       document.getElementById('cancelEditBtn').style.display = 'none';
       imgPreview.style.display = 'none';
+      uploadPrompt.innerHTML = `
+        <div style="font-size: 24px; margin-bottom: 4px;">📸</div>
+        <strong>แตะที่นี่เพื่อเลือกรูปจากมือถือ / คอมพิวเตอร์</strong>
+        <div style="font-size: 12px; color: #767676; margin-top: 4px;">หรือกด Ctrl + V เพื่อวางรูปภาพ</div>
+      `;
       currentImagePath = 'assets/p1.jpg';
     }
 
     document.getElementById('cancelEditBtn').addEventListener('click', resetForm);
 
-    async function githubPutFile(path, base64Content, message, token) {
+    // Publishing Mechanism (Serverless API + Fallback)
+    const saveOverlay = document.getElementById('saveOverlay');
+    const saveModalIcon = document.getElementById('saveModalIcon');
+    const saveModalTitle = document.getElementById('saveModalTitle');
+    const saveModalText = document.getElementById('saveModalText');
+    const saveModalCloseBtn = document.getElementById('saveModalCloseBtn');
+
+    function showProgress(title, text) {
+      saveOverlay.style.display = 'flex';
+      saveModalIcon.textContent = '⏳';
+      saveModalTitle.textContent = title;
+      saveModalText.textContent = text;
+      saveModalCloseBtn.style.display = 'none';
+    }
+
+    function showSuccess(title, text) {
+      saveModalIcon.textContent = '✅';
+      saveModalTitle.textContent = title;
+      saveModalText.textContent = text;
+      saveModalCloseBtn.style.display = 'inline-block';
+      saveModalCloseBtn.onclick = () => {
+        saveOverlay.style.display = 'none';
+      };
+    }
+
+    function showError(title, text) {
+      saveModalIcon.textContent = '❌';
+      saveModalTitle.textContent = title;
+      saveModalText.textContent = text;
+      saveModalCloseBtn.style.display = 'inline-block';
+      saveModalCloseBtn.onclick = () => {
+        saveOverlay.style.display = 'none';
+      };
+    }
+
+    async function publishToLive() {
+      showProgress('กำลังบันทึกข้อมูลขึ้นเว็บจริง...', 'กำลังอัปโหลดรูปภาพและบันทึกข้อมูลสินค้าไปยังคลาวด์');
+
+      try {
+        // Attempt 1: Call Vercel Serverless Function /api/publish
+        let apiSuccess = false;
+        try {
+          const apiRes = await fetch('/api/publish', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-GitHub-Token': getGithubToken()
+            },
+            body: JSON.stringify({
+              products: products,
+              images: pendingImages
+            })
+          });
+
+          if (apiRes.ok) {
+            const data = await apiRes.json();
+            if (data.success) {
+              apiSuccess = true;
+            }
+          }
+        } catch (apiErr) {
+          console.log('Serverless API not reachable directly, attempting GitHub direct fallback...');
+        }
+
+        // Attempt 2: If API call failed, fallback to client-side GitHub API
+        if (!apiSuccess) {
+          const token = getGithubToken();
+          if (!token) {
+            throw new Error('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ และยังไม่ได้ใส่ GitHub Token');
+          }
+          for (const [imgPath, imgObj] of Object.entries(pendingImages)) {
+            await directGithubPut(imgPath, imgObj.base64, `Upload ${imgPath}`, token);
+          }
+          const jsonStr = JSON.stringify(products, null, 2);
+          await directGithubPut('products.json', btoa(unescape(encodeURIComponent(jsonStr))), 'Update products.json', token);
+        }
+
+        pendingImages = {};
+        localStorage.removeItem('aj_products_draft');
+
+        showSuccess(
+          'บันทึกขึ้นเว็บจริงสำเร็จแล้ว!',
+          `อัปเดตสินค้าทั้งหมด ${products.length} รายการเรียบร้อยแล้ว หน้าเว็บจะแสดงผลข้อมูลใหม่ในทันที`
+        );
+      } catch (err) {
+        showError('เกิดข้อผิดพลาดในการบันทึก', err.message || 'กรุณาลองใหม่อีกครั้ง');
+      }
+    }
+
+    async function directGithubPut(path, base64Content, message, token) {
       const url = `https://api.github.com/repos/${REPO}/contents/${path}`;
       const headers = {
         'Authorization': `Bearer ${token}`,
         'Accept': 'application/vnd.github+json',
         'Content-Type': 'application/json'
       };
-
       let sha = null;
-      const getRes = await fetch(url, { headers });
-      if (getRes.ok) {
-        const existing = await getRes.json();
-        sha = existing.sha;
-      }
+      try {
+        const getRes = await fetch(url, { headers });
+        if (getRes.ok) {
+          const ex = await getRes.json();
+          sha = ex.sha;
+        }
+      } catch (e) {}
 
       const body = { message, content: base64Content };
       if (sha) body.sha = sha;
 
-      const putRes = await fetch(url, {
-        method: 'PUT',
-        headers,
-        body: JSON.stringify(body)
-      });
-
-      if (!putRes.ok) {
-        throw new Error('GitHub API Error: ' + putRes.status);
-      }
+      const putRes = await fetch(url, { method: 'PUT', headers, body: JSON.stringify(body) });
+      if (!putRes.ok) throw new Error('GitHub API Error: ' + putRes.status);
     }
 
-    function utf8ToBase64(str) {
-      return btoa(unescape(encodeURIComponent(str)));
-    }
-
-    document.getElementById('publishBtn').addEventListener('click', async () => {
-      const token = getGithubToken();
-      if (!token) {
-        alert('กรุณากดปุ่ม "ตั้งค่า GitHub Token" ก่อนทำการบันทึกขึ้นเว็บจริงครับ');
-        return;
-      }
-
-      const btn = document.getElementById('publishBtn');
-      const statusEl = document.getElementById('connStatus');
-      btn.disabled = true;
-      btn.textContent = 'กำลังอัปโหลดขึ้นเว็บจริง...';
-
-      try {
-        for (const [imgPath, imgObj] of Object.entries(pendingImages)) {
-          statusEl.textContent = `กำลังอัปโหลดรูปภาพ ${imgPath}...`;
-          await githubPutFile(imgPath, imgObj.base64, `Upload product image ${imgPath}`, token);
-        }
-        pendingImages = {};
-
-        statusEl.textContent = 'กำลังอัปเดตฐานข้อมูลสินค้า products.json...';
-        const jsonStr = JSON.stringify(products, null, 2);
-        await githubPutFile('products.json', utf8ToBase64(jsonStr), 'Update catalog products.json via Admin Panel', token);
-
-        localStorage.removeItem('aj_products_draft');
-        statusEl.textContent = '✓ อัปเดตขึ้นเว็บจริงเรียบร้อยแล้ว!';
-        statusEl.style.color = '#1a7f37';
-        alert('บันทึกข้อมูลและรูปภาพขึ้นเว็บจริงเรียบร้อยแล้วครับ!');
-      } catch (err) {
-        alert('เกิดข้อผิดพลาดในการบันทึก: ' + err.message + '\n\nคำแนะนำ: กรุณาตรวจสอบว่าใส่ GitHub Token ถูกต้องหรือไม่');
-      } finally {
-        btn.disabled = false;
-        btn.textContent = 'บันทึกขึ้นเว็บจริงทันที';
-      }
-    });
+    document.getElementById('publishBtn').addEventListener('click', publishToLive);
 
     initAdmin();
   </script>
