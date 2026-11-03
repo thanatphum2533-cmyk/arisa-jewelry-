@@ -353,13 +353,24 @@
   <script>
     const REPO = 'thanatphum2533-cmyk/arisa-jewelry-';
     function getGithubToken() {
-      // Check localStorage first, or URL hash #token=...
-      if (window.location.hash.startsWith('#token=')) {
-        const t = window.location.hash.replace('#token=', '');
-        localStorage.setItem('aj_gh_token', t);
-        history.replaceState(null, '', window.location.pathname);
-        return t;
+      // 1. Check URL hash: #token=...
+      if (window.location.hash && window.location.hash.includes('token=')) {
+        const match = window.location.hash.match(/token=([a-zA-Z0-9_]+)/);
+        if (match && match[1]) {
+          localStorage.setItem('aj_gh_token', match[1]);
+          history.replaceState(null, '', window.location.pathname);
+          return match[1];
+        }
       }
+      // 2. Check URL query string: ?token=...
+      const urlParams = new URLSearchParams(window.location.search);
+      const queryToken = urlParams.get('token');
+      if (queryToken) {
+        localStorage.setItem('aj_gh_token', queryToken);
+        history.replaceState(null, '', window.location.pathname);
+        return queryToken;
+      }
+      // 3. Check localStorage
       return localStorage.getItem('aj_gh_token') || '';
     }
     
@@ -759,7 +770,7 @@
         statusEl.style.color = '#1a7f37';
         alert('บันทึกข้อมูลและรูปภาพขึ้นเว็บจริงเรียบร้อยแล้วครับ!');
       } catch (err) {
-        alert('เกิดข้อผิดพลาดในการบันทึก: ' + err.message);
+        alert('เกิดข้อผิดพลาดในการบันทึก: ' + err.message + '\n\nคำแนะนำ: กรุณาตรวจสอบว่าใส่ GitHub Token ถูกต้องหรือไม่');
       } finally {
         btn.disabled = false;
         btn.textContent = 'บันทึกขึ้นเว็บจริงทันที';
