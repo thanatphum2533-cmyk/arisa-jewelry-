@@ -323,13 +323,13 @@
           <input type="hidden" id="editIndex" value="-1">
 
           <div class="field-group">
-            <label>รูปภาพสินค้า (แตะเลือกรูปจากมือถือ / ลากวาง / หรือกด Ctrl+V วางรูป)</label>
+            <label>รูปภาพสินค้า (ระบบบังคับปรับขนาดเป็น 1:1 สี่เหลี่ยมจัตุรัสให้อัตโนมัติทุกรูป)</label>
             <div class="img-upload-box" id="uploadBox">
               <img id="imgPreview" class="img-preview" alt="Preview">
               <div id="uploadPrompt" style="font-size: 13.5px; color: #333333; line-height: 1.5;">
                 <div style="font-size: 24px; margin-bottom: 4px;">📸</div>
                 <strong>แตะที่นี่เพื่อเลือกรูปจากมือถือ / คอมพิวเตอร์</strong>
-                <div style="font-size: 12px; color: #767676; margin-top: 4px;">หรือกด Ctrl + V เพื่อวางรูปภาพ</div>
+                <div style="font-size: 12px; color: #767676; margin-top: 4px;">ระบบบังคับตัดเป็นขนาด 1:1 (สี่เหลี่ยมจัตุรัส) ให้อัตโนมัติ</div>
               </div>
               <input type="file" id="imgInput" accept="image/*" style="display: none;">
             </div>
@@ -640,17 +640,19 @@
       img.onload = () => {
         try {
           const canvas = document.createElement('canvas');
-          const maxDim = 1000;
-          let w = img.width;
-          let h = img.height;
-          if (w > maxDim || h > maxDim) {
-            if (w > h) { h = Math.round(h * maxDim / w); w = maxDim; }
-            else { w = Math.round(w * maxDim / h); h = maxDim; }
-          }
-          canvas.width = w;
-          canvas.height = h;
+          const targetDim = 1000;
+          canvas.width = targetDim;
+          canvas.height = targetDim;
           const ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0, w, h);
+
+          ctx.fillStyle = '#FFFFFF';
+          ctx.fillRect(0, 0, targetDim, targetDim);
+
+          // Force 1:1 square center crop
+          const minDim = Math.min(img.width, img.height);
+          const sx = Math.floor((img.width - minDim) / 2);
+          const sy = Math.floor((img.height - minDim) / 2);
+          ctx.drawImage(img, sx, sy, minDim, minDim, 0, 0, targetDim, targetDim);
 
           const dataUrl = canvas.toDataURL('image/jpeg', 0.88);
           imgPreview.src = dataUrl;
@@ -663,7 +665,7 @@
             previewUrl: dataUrl
           };
 
-          uploadPrompt.innerHTML = '<div style="font-size: 13px; color: #1a7f37;">✓ อัปโหลดรูปภาพเรียบร้อย (แตะเพื่อเปลี่ยนรูปใหม่)</div>';
+          uploadPrompt.innerHTML = '<div style="font-size: 13px; color: #1a7f37;">✓ ปรับสัดส่วนเป็น 1:1 (สี่เหลี่ยมจัตุรัส) เรียบร้อย</div>';
         } catch (err) {
           uploadPrompt.innerHTML = '<div style="font-size: 13px; color: #b91c1c;">⚠️ ไม่สามารถแปลงรูปภาพได้ กรุณาลองใหม่อีกครั้ง</div>';
         }
