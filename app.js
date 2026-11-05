@@ -592,7 +592,7 @@ function renderBag() {
 
   bagItemsList.innerHTML = bag.map(i => `
     <div style="display: grid; grid-template-columns: 64px 1fr auto; gap: 14px; padding: 16px 0; border-bottom: 1px solid #E5E5E5; align-items: center;">
-      <img src="${i.image}" alt="${i.name}" style="width: 64px; height: 68px; object-fit: cover; background: #F3F2F0;">
+      <img src="${i.image}" alt="${i.name}" style="width: 64px; height: 64px; aspect-ratio: 1 / 1; object-fit: cover; background: #F3F2F0;">
       <div>
         <div style="font-size: 14px; font-weight: 500;">${i.name}</div>
         <div style="font-size: 12px; color: #767676;">${i.sub}</div>
