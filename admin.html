@@ -131,6 +131,72 @@
       background: #FFFFFF;
       border: 1px solid #E5E5E5;
     }
+    .multi-img-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .multi-img-slot {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      border: 1px dashed #C8A464;
+      background: #FBF9F5;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      overflow: hidden;
+      transition: all 0.2s;
+    }
+    .multi-img-slot:hover {
+      border-color: #141414;
+      background: #F5EFE6;
+    }
+    .multi-img-slot.filled {
+      border: 1px solid #E5E5E5;
+      background: #FFFFFF;
+    }
+    .multi-img-slot.is-main {
+      border: 2px solid #C8A464;
+    }
+    .multi-img-slot img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .slot-badge {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(18, 17, 16, 0.82);
+      color: #DFC28B;
+      font-size: 9.5px;
+      text-align: center;
+      padding: 2px 0;
+      font-weight: 500;
+    }
+    .slot-remove {
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      width: 18px;
+      height: 18px;
+      background: rgba(185, 28, 28, 0.9);
+      color: #FFFFFF;
+      border: none;
+      font-size: 11px;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+    }
     .admin-table {
       width: 100%;
       border-collapse: collapse;
@@ -324,18 +390,22 @@
           <input type="hidden" id="editIndex" value="-1">
 
           <div class="field-group">
-            <label>รูปภาพสินค้า (ระบบบังคับปรับขนาดเป็น 1:1 สี่เหลี่ยมจัตุรัสให้อัตโนมัติทุกรูป)</label>
+            <label>รูปภาพสินค้า สูงสุด 5 รูป / 5 มุม (ระบบบังคับปรับขนาดเป็น 1:1 สี่เหลี่ยมจัตุรัสให้อัตโนมัติ)</label>
             <div class="img-upload-box" id="uploadBox">
               <img id="imgPreview" class="img-preview" alt="Preview">
               <div id="uploadPrompt" style="font-size: 13.5px; color: #333333; line-height: 1.5;">
                 <div style="font-size: 24px; margin-bottom: 4px;">📸</div>
-                <strong>แตะที่นี่เพื่อเลือกรูปจากมือถือ / คอมพิวเตอร์</strong>
-                <div style="font-size: 12px; color: #767676; margin-top: 4px;">ระบบบังคับตัดเป็นขนาด 1:1 (สี่เหลี่ยมจัตุรัส) ให้อัตโนมัติ</div>
+                <strong>แตะที่นี่เพื่อเลือกรูปจากมือถือ / คอมพิวเตอร์ (เลือกได้สูงสุด 5 รูป)</strong>
+                <div style="font-size: 12px; color: #767676; margin-top: 4px;">ระบบบังคับตัดเป็นขนาด 1:1 (สี่เหลี่ยมจัตุรัส) ให้อัตโนมัติทุกรูป</div>
               </div>
-              <input type="file" id="imgInput" accept="image/*" style="display: none;">
+              <input type="file" id="imgInput" accept="image/*" multiple style="display: none;">
+            </div>
+            <div class="multi-img-grid" id="multiImgGrid"></div>
+            <div style="font-size: 11.5px; color: #767676; margin-top: 5px;">
+              * รูปที่ 1 คือรูปปกหลัก (แตะที่รูปย่อยมุมอื่นเพื่อสลับตั้งเป็นรูปหลัก หรือกด × เพื่อลบรูปมุมนั้น)
             </div>
             <div style="display: flex; gap: 6px; margin-top: 8px;">
-              <input type="url" id="imgUrlInput" class="field-input" placeholder="หรือวางลิงก์รูปภาพโดยตรง (https://...)" style="font-size: 12px; padding: 7px 10px;">
+              <input type="url" id="imgUrlInput" class="field-input" placeholder="หรือวางลิงก์รูปภาพโดยตรงเพื่อเพิ่มมุมรูป (https://...)" style="font-size: 12px; padding: 7px 10px;">
               <button type="button" class="btn-sm" id="fetchImgUrlBtn" style="white-space: nowrap; background: #121110; color: #DFC28B; border-color: #C8A464;">ดึงรูป</button>
             </div>
           </div>
@@ -541,7 +611,8 @@
     // Catalog state
     let products = [];
     let pendingImages = {};
-    let currentImagePath = 'assets/p1.jpg';
+    let currentImages = [];
+    const MAX_PRODUCT_IMAGES = 5;
 
     document.getElementById('tokenBtn').addEventListener('click', () => {
       const current = getGithubToken() || '';
@@ -602,12 +673,27 @@
       bracelets: 'สร้อยข้อมือ'
     };
 
+    function getPreviewUrl(imgPath) {
+      if (pendingImages[imgPath] && pendingImages[imgPath].previewUrl) {
+        return pendingImages[imgPath].previewUrl;
+      }
+      return imgPath;
+    }
+
     function renderTable() {
       document.getElementById('totalItems').textContent = products.length;
       const tbody = document.getElementById('adminTableBody');
-      tbody.innerHTML = products.map((p, idx) => `
+      tbody.innerHTML = products.map((p, idx) => {
+        const imgs = (Array.isArray(p.images) && p.images.length > 0) ? p.images : [p.image];
+        const mainSrc = getPreviewUrl(imgs[0]);
+        return `
         <tr>
-          <td><img src="${p.image}" class="admin-thumb" alt="${p.name}" onerror="this.src='assets/p1.jpg'"></td>
+          <td>
+            <div style="position: relative; width: 52px; height: 52px;">
+              <img src="${mainSrc}" class="admin-thumb" alt="${p.name}" onerror="this.src='assets/p1.jpg'">
+              ${imgs.length > 1 ? `<span style="position:absolute; bottom:0; right:0; background:#121110; color:#DFC28B; font-size:9.5px; padding:1px 4px; font-weight:500;">${imgs.length} รูป</span>` : ''}
+            </div>
+          </td>
           <td>
             <div style="font-size: 11.5px; color: #767676;">${p.id} ${p.badge ? `· <strong>[${p.badge}]</strong>` : ''}</div>
             <div style="font-weight: 500;">${p.name}</div>
@@ -620,26 +706,91 @@
             <button type="button" class="btn-sm" onclick="deleteItem(${idx})" style="color: #b91c1c;">ลบ</button>
           </td>
         </tr>
-      `).join('');
+      `}).join('');
     }
 
-    // Image Upload Handling
+    // Image Upload Handling (Up to 5 images per product)
     const uploadBox = document.getElementById('uploadBox');
     const imgInput = document.getElementById('imgInput');
     const imgPreview = document.getElementById('imgPreview');
     const uploadPrompt = document.getElementById('uploadPrompt');
+    const multiImgGrid = document.getElementById('multiImgGrid');
+
+    function renderMultiImgGrid() {
+      if (currentImages.length > 0) {
+        imgPreview.src = getPreviewUrl(currentImages[0]);
+        imgPreview.style.display = 'block';
+        uploadPrompt.innerHTML = `<div style="font-size: 13px; color: #1a7f37;">✓ เลือกแล้ว ${currentImages.length}/${MAX_PRODUCT_IMAGES} รูป (ขนาด 1:1 สี่เหลี่ยมจัตุรัส)</div>` +
+          (currentImages.length < MAX_PRODUCT_IMAGES ? `<div style="font-size: 11.5px; color: #545454; margin-top: 2px;">แตะที่นี่หรือช่อง + ด้านล่างเพื่อเพิ่มรูปมุมอื่น (เหลืออีก ${MAX_PRODUCT_IMAGES - currentImages.length} รูป)</div>` : '');
+      } else {
+        imgPreview.style.display = 'none';
+        uploadPrompt.innerHTML = `
+          <div style="font-size: 24px; margin-bottom: 4px;">📸</div>
+          <strong>แตะที่นี่เพื่อเลือกรูปจากมือถือ / คอมพิวเตอร์ (สูงสุด 5 รูป)</strong>
+          <div style="font-size: 12px; color: #767676; margin-top: 4px;">ระบบบังคับตัดเป็นขนาด 1:1 (สี่เหลี่ยมจัตุรัส) ให้อัตโนมัติทุกรูป</div>
+        `;
+      }
+
+      let slotsHtml = '';
+      for (let i = 0; i < MAX_PRODUCT_IMAGES; i++) {
+        if (i < currentImages.length) {
+          const src = getPreviewUrl(currentImages[i]);
+          const isMain = i === 0;
+          slotsHtml += `
+            <div class="multi-img-slot filled ${isMain ? 'is-main' : ''}" onclick="setAsMainImage(${i})" title="${isMain ? 'รูปปกหลัก' : 'แตะเพื่อตั้งเป็นรูปปกหลัก'}">
+              <img src="${src}" alt="มุมที่ ${i + 1}" onerror="this.src='assets/p1.jpg'">
+              <button type="button" class="slot-remove" onclick="removeImageSlot(event, ${i})" title="ลบรูปนี้">×</button>
+              <span class="slot-badge">${isMain ? 'รูปหลัก' : 'มุมที่ ' + (i + 1)}</span>
+            </div>
+          `;
+        } else {
+          slotsHtml += `
+            <div class="multi-img-slot" onclick="triggerAddImage()" title="เพิ่มรูปมุมที่ ${i + 1}">
+              <span style="font-size: 16px; color: #C8A464; line-height: 1;">+</span>
+              <span style="font-size: 10px; color: #767676; margin-top: 2px;">รูปที่ ${i + 1}</span>
+            </div>
+          `;
+        }
+      }
+      multiImgGrid.innerHTML = slotsHtml;
+    }
+
+    window.triggerAddImage = function() {
+      if (currentImages.length >= MAX_PRODUCT_IMAGES) {
+        alert('ใส่รูปสินค้าได้สูงสุด 5 รูปต่อชิ้นครับ หากต้องการเปลี่ยนรูป กรุณากดปุ่ม × เพื่อลบรูปเดิมออกก่อน');
+        return;
+      }
+      imgInput.click();
+    };
+
+    window.setAsMainImage = function(idx) {
+      if (idx <= 0 || idx >= currentImages.length) return;
+      const chosen = currentImages.splice(idx, 1)[0];
+      currentImages.unshift(chosen);
+      renderMultiImgGrid();
+    };
+
+    window.removeImageSlot = function(e, idx) {
+      e.stopPropagation();
+      currentImages.splice(idx, 1);
+      renderMultiImgGrid();
+    };
 
     function processProductImageSource(srcUrl) {
-      uploadPrompt.innerHTML = '<div style="font-size: 13px; color: #C8A464;">⏳ กำลังประมวลผลรูปภาพ...</div>';
+      if (currentImages.length >= MAX_PRODUCT_IMAGES) {
+        alert('ใส่รูปสินค้าครบ 5 รูปแล้วครับ หากต้องการเพิ่มใหม่ กรุณาลบรูปเดิมออกก่อน');
+        return;
+      }
+      uploadPrompt.innerHTML = '<div style="font-size: 13px; color: #C8A464;">⏳ กำลังประมวลผลรูปภาพขนาด 1:1...</div>';
       
       const img = new Image();
-      // Only set crossOrigin for remote http(s) URLs, NEVER for data: URLs or blobs!
       if (typeof srcUrl === 'string' && (srcUrl.startsWith('http://') || srcUrl.startsWith('https://'))) {
         img.crossOrigin = 'anonymous';
       }
 
       img.onload = () => {
         try {
+          if (currentImages.length >= MAX_PRODUCT_IMAGES) return;
           const canvas = document.createElement('canvas');
           const targetDim = 1000;
           canvas.width = targetDim;
@@ -656,17 +807,14 @@
           ctx.drawImage(img, sx, sy, minDim, minDim, 0, 0, targetDim, targetDim);
 
           const dataUrl = canvas.toDataURL('image/jpeg', 0.88);
-          imgPreview.src = dataUrl;
-          imgPreview.style.display = 'block';
-
-          const filename = 'assets/item-' + Date.now() + '.jpg';
-          currentImagePath = filename;
+          const uniqueSuffix = Date.now() + '-' + Math.floor(Math.random() * 1000);
+          const filename = 'assets/item-' + uniqueSuffix + '.jpg';
           pendingImages[filename] = {
             base64: dataUrl.split(',')[1],
             previewUrl: dataUrl
           };
-
-          uploadPrompt.innerHTML = '<div style="font-size: 13px; color: #1a7f37;">✓ ปรับสัดส่วนเป็น 1:1 (สี่เหลี่ยมจัตุรัส) เรียบร้อย</div>';
+          currentImages.push(filename);
+          renderMultiImgGrid();
         } catch (err) {
           uploadPrompt.innerHTML = '<div style="font-size: 13px; color: #b91c1c;">⚠️ ไม่สามารถแปลงรูปภาพได้ กรุณาลองใหม่อีกครั้ง</div>';
         }
@@ -680,20 +828,29 @@
       img.src = srcUrl;
     }
 
-    function handleImageFile(file) {
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = (ev) => processProductImageSource(ev.target.result);
-      reader.readAsDataURL(file);
+    function handleImageFiles(fileList) {
+      if (!fileList || fileList.length === 0) return;
+      const remaining = MAX_PRODUCT_IMAGES - currentImages.length;
+      if (remaining <= 0) {
+        alert('ใส่รูปสินค้าครบ 5 รูปแล้วครับ หากต้องการเปลี่ยนรูป กรุณากด × ที่รูปย่อยเพื่อลบออกก่อน');
+        return;
+      }
+      const files = Array.from(fileList).slice(0, remaining);
+      files.forEach(file => {
+        const reader = new FileReader();
+        reader.onload = (ev) => processProductImageSource(ev.target.result);
+        reader.readAsDataURL(file);
+      });
     }
 
     // Stop propagation so clicking input does not re-trigger uploadBox click
     imgInput.addEventListener('click', (e) => e.stopPropagation());
 
-    uploadBox.addEventListener('click', () => imgInput.click());
+    uploadBox.addEventListener('click', () => triggerAddImage());
     imgInput.addEventListener('change', (e) => {
-      if (e.target.files && e.target.files[0]) {
-        handleImageFile(e.target.files[0]);
+      if (e.target.files && e.target.files.length > 0) {
+        handleImageFiles(e.target.files);
+        imgInput.value = '';
       }
     });
 
@@ -708,21 +865,21 @@
     uploadBox.addEventListener('drop', (e) => {
       e.preventDefault();
       uploadBox.style.borderColor = '#C8A464';
-      if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-        handleImageFile(e.dataTransfer.files[0]);
+      if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+        handleImageFiles(e.dataTransfer.files);
       }
     });
 
     // Ctrl+V Paste anywhere
     window.addEventListener('paste', (e) => {
       const items = (e.clipboardData || e.originalEvent.clipboardData).items;
+      const blobs = [];
       for (const item of items) {
         if (item.type.indexOf('image') === 0) {
-          const blob = item.getAsFile();
-          handleImageFile(blob);
-          break;
+          blobs.push(item.getAsFile());
         }
       }
+      if (blobs.length > 0) handleImageFiles(blobs);
     });
 
     // Direct Image URL fetch
@@ -730,6 +887,7 @@
       const url = document.getElementById('imgUrlInput').value.trim();
       if (!url) return;
       processProductImageSource(url);
+      document.getElementById('imgUrlInput').value = '';
     });
 
     // Hero Banner
@@ -783,6 +941,7 @@
         alert('กรุณากรอกรหัสสินค้า, ชื่อสินค้า และราคาให้ครบถ้วน');
         return null;
       }
+      const finalImages = currentImages.length > 0 ? [...currentImages] : ['assets/p1.jpg'];
       return {
         id: pId,
         category: document.getElementById('pCat').value,
@@ -793,7 +952,8 @@
         weight: document.getElementById('pWeight').value.trim(),
         sizing: document.getElementById('pSizing').value.trim(),
         desc: document.getElementById('pDesc').value.trim(),
-        image: currentImagePath
+        image: finalImages[0],
+        images: finalImages
       };
     }
 
@@ -841,10 +1001,10 @@
       document.getElementById('pSizing').value = p.sizing;
       document.getElementById('pDesc').value = p.desc;
 
-      currentImagePath = p.image;
-      imgPreview.src = pendingImages[p.image] ? pendingImages[p.image].previewUrl : p.image;
-      imgPreview.style.display = 'block';
-      uploadPrompt.innerHTML = '<div style="font-size: 13px; color: #1a7f37;">✓ มีรูปภาพเดิมแล้ว (แตะเพื่อเปลี่ยนรูปใหม่)</div>';
+      currentImages = (Array.isArray(p.images) && p.images.length > 0)
+        ? p.images.slice(0, MAX_PRODUCT_IMAGES)
+        : (p.image ? [p.image] : []);
+      renderMultiImgGrid();
 
       document.getElementById('saveAndPublishBtn').textContent = '🚀 บันทึกการแก้ไขและอัปเดตเว็บจริงทันที';
       document.getElementById('cancelEditBtn').style.display = 'block';
@@ -867,14 +1027,11 @@
       document.getElementById('formHeading').innerHTML = '<span>เพิ่มสินค้าใหม่</span>';
       document.getElementById('saveAndPublishBtn').textContent = '🚀 บันทึกและอัปเดตขึ้นเว็บจริงทันที';
       document.getElementById('cancelEditBtn').style.display = 'none';
-      imgPreview.style.display = 'none';
-      uploadPrompt.innerHTML = `
-        <div style="font-size: 24px; margin-bottom: 4px;">📸</div>
-        <strong>แตะที่นี่เพื่อเลือกรูปจากมือถือ / คอมพิวเตอร์</strong>
-        <div style="font-size: 12px; color: #767676; margin-top: 4px;">หรือกด Ctrl + V เพื่อวางรูปภาพ</div>
-      `;
-      currentImagePath = 'assets/p1.jpg';
+      currentImages = [];
+      renderMultiImgGrid();
     }
+
+    renderMultiImgGrid();
 
     document.getElementById('cancelEditBtn').addEventListener('click', resetForm);
 

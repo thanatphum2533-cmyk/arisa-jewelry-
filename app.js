@@ -1,4 +1,4 @@
-﻿let PRODUCTS = [
+let PRODUCTS = [
   {
     "id": "AJ-N01",
     "category": "necklaces",
@@ -319,6 +319,8 @@ function renderCatalog() {
   productGrid.innerHTML = list.map((p, idx) => {
     const isSaved = wishlist.has(p.id);
     const delay = (idx % 8) * 60;
+    const imgs = (Array.isArray(p.images) && p.images.length > 0) ? p.images : [p.image];
+    const coverImg = imgs[0] || p.image;
     return `
       <article class="sw-card" data-id="${p.id}" style="animation-delay: ${delay}ms">
         <div class="sw-tile-media">
@@ -326,7 +328,8 @@ function renderCatalog() {
           <button class="sw-wish-btn ${isSaved ? 'saved' : ''}" data-wish="${p.id}" type="button" title="บันทึกในรายการโปรด">
             ${isSaved ? 'บันทึกแล้ว' : 'บันทึก'}
           </button>
-          <img src="${p.image}" alt="${p.name}" class="sw-tile-img" loading="lazy">
+          <img src="${coverImg}" alt="${p.name}" class="sw-tile-img" loading="lazy">
+          ${imgs.length > 1 ? `<span class="sw-multi-angle-pill">${imgs.length} มุมมอง</span>` : ''}
         </div>
         <div class="sw-tile-info">
           <h3 class="sw-tile-title">${p.name}</h3>
@@ -364,13 +367,56 @@ sortSelect.addEventListener('change', (e) => {
   renderCatalog();
 });
 
+let currentModalImages = [];
+let currentModalImgIndex = 0;
+
+window.switchModalImage = function(idx) {
+  if (!currentModalImages.length) return;
+  currentModalImgIndex = (idx + currentModalImages.length) % currentModalImages.length;
+  const mainImgEl = document.getElementById('modalMainImg');
+  if (mainImgEl) {
+    mainImgEl.src = currentModalImages[currentModalImgIndex];
+  }
+  const counterEl = document.getElementById('modalImgCounter');
+  if (counterEl) {
+    counterEl.textContent = `${currentModalImgIndex + 1} / ${currentModalImages.length}`;
+  }
+  document.querySelectorAll('.sw-modal-thumb').forEach((btn, i) => {
+    btn.classList.toggle('active', i === currentModalImgIndex);
+  });
+};
+
 function openModal(id) {
   const p = PRODUCTS.find(x => x.id === id);
   if (!p) return;
 
+  currentModalImages = (Array.isArray(p.images) && p.images.length > 0) ? p.images : [p.image];
+  currentModalImgIndex = 0;
+
+  const hasMulti = currentModalImages.length > 1;
+  const thumbsHtml = hasMulti ? `
+    <div class="sw-modal-thumbs">
+      ${currentModalImages.map((src, i) => `
+        <button type="button" class="sw-modal-thumb ${i === 0 ? 'active' : ''}" onclick="switchModalImage(${i})" aria-label="ดูรูปมุมที่ ${i + 1}">
+          <img src="${src}" alt="${p.name} มุมที่ ${i + 1}">
+        </button>
+      `).join('')}
+    </div>
+  ` : '';
+
   modalBody.innerHTML = `
     <div class="sw-modal-grid">
-      <img src="${p.image}" alt="${p.name}" class="sw-modal-img">
+      <div class="sw-modal-gallery">
+        <div class="sw-modal-main-wrap">
+          <img src="${currentModalImages[0]}" id="modalMainImg" alt="${p.name}" class="sw-modal-img">
+          ${hasMulti ? `
+            <button type="button" class="sw-gallery-nav prev" onclick="switchModalImage(currentModalImgIndex - 1)" aria-label="รูปก่อนหน้า">‹</button>
+            <button type="button" class="sw-gallery-nav next" onclick="switchModalImage(currentModalImgIndex + 1)" aria-label="รูปถัดไป">›</button>
+            <span class="sw-gallery-counter" id="modalImgCounter">1 / ${currentModalImages.length}</span>
+          ` : ''}
+        </div>
+        ${thumbsHtml}
+      </div>
       <div class="sw-modal-info">
         <div>
           <div style="font-size: 12px; color: #767676; margin-bottom: 6px;">รหัสสินค้า ${p.id}</div>
