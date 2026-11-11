@@ -2,6 +2,17 @@
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY;
 const REPO = 'thanatphum2533-cmyk/arisa-jewelry-';
+const RAW_CDN_PREFIX = `https://raw.githubusercontent.com/${REPO}/main/`;
+
+function normalizeProducts(list) {
+  if (!Array.isArray(list)) return list;
+  const toCdn = (u) => (typeof u === 'string' && u.startsWith('assets/item-')) ? RAW_CDN_PREFIX + u : u;
+  return list.map(p => ({
+    ...p,
+    image: toCdn(p.image),
+    images: Array.isArray(p.images) ? p.images.map(toCdn) : (p.image ? [toCdn(p.image)] : [])
+  }));
+}
 
 module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -25,7 +36,7 @@ module.exports = async (req, res) => {
       if (sbRes.ok) {
         const data = await sbRes.json();
         if (Array.isArray(data) && data.length > 0) {
-          return res.status(200).json(data);
+          return res.status(200).json(normalizeProducts(data));
         }
       }
     } catch (sbErr) {
@@ -50,7 +61,7 @@ module.exports = async (req, res) => {
       const data = await ghRes.json();
       const content = Buffer.from(data.content, 'base64').toString('utf8');
       const products = JSON.parse(content);
-      return res.status(200).json(products);
+      return res.status(200).json(normalizeProducts(products));
     }
   } catch (ghErr) {
     console.error('GitHub fetch error, trying local file fallback:', ghErr);
@@ -63,7 +74,7 @@ module.exports = async (req, res) => {
     const filePath = path.join(process.cwd(), 'products.json');
     if (fs.existsSync(filePath)) {
       const content = fs.readFileSync(filePath, 'utf8');
-      return res.status(200).json(JSON.parse(content));
+      return res.status(200).json(normalizeProducts(JSON.parse(content)));
     }
   } catch (err) {}
 

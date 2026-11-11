@@ -1,0 +1,59 @@
+name: Normalize Product Image URLs to CDN
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'products.json'
+
+permissions:
+  contents: write
+
+jobs:
+  normalize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Convert relative item images to Raw GitHub CDN URLs
+        run: |
+          python3 - << 'EOF'
+          import json, sys
+
+          repo = 'thanatphum2533-cmyk/arisa-jewelry-'
+          prefix = f'https://raw.githubusercontent.com/{repo}/main/'
+
+          def to_cdn(u):
+              if isinstance(u, str) and u.startswith('assets/item-'):
+                  return prefix + u
+              return u
+
+          with open('products.json', 'r', encoding='utf-8') as f:
+              data = json.load(f)
+
+          changed = False
+          for p in data:
+              if 'image' in p:
+                  new_u = to_cdn(p['image'])
+                  if new_u != p['image']:
+                      p['image'] = new_u
+                      changed = True
+              if 'images' in p and isinstance(p['images'], list):
+                  new_list = [to_cdn(x) for x in p['images']]
+                  if new_list != p['images']:
+                      p['images'] = new_list
+                      changed = True
+
+          if changed:
+              with open('products.json', 'w', encoding='utf-8', newline='\n') as f:
+                  json.dump(data, f, ensure_ascii=False, indent=2)
+          EOF
+          if ! git diff --quiet products.json; then
+            git config user.name "arisa-cdn-bot"
+            git config user.email "bot@arisajewelry.com"
+            git add products.json
+            git commit -m "Auto-convert image paths to instant CDN URLs"
+            git pull --rebase origin main
+            git push origin main
+          fi

@@ -299,6 +299,15 @@ const proceedCheckoutBtn = document.getElementById('proceedCheckoutBtn');
 const checkoutForm = document.getElementById('checkoutForm');
 const orderSuccessMsg = document.getElementById('orderSuccessMsg');
 
+const RAW_CDN_BASE = 'https://raw.githubusercontent.com/thanatphum2533-cmyk/arisa-jewelry-/main/';
+
+function resolveImgUrl(src) {
+  if (typeof src === 'string' && src.startsWith('assets/item-')) {
+    return RAW_CDN_BASE + src;
+  }
+  return src;
+}
+
 function formatSwPrice(n) {
   return n.toLocaleString('th-TH') + ' ฿';
 }
@@ -319,8 +328,8 @@ function renderCatalog() {
   productGrid.innerHTML = list.map((p, idx) => {
     const isSaved = wishlist.has(p.id);
     const delay = (idx % 8) * 60;
-    const imgs = (Array.isArray(p.images) && p.images.length > 0) ? p.images : [p.image];
-    const coverImg = imgs[0] || p.image;
+    const imgs = ((Array.isArray(p.images) && p.images.length > 0) ? p.images : [p.image]).map(resolveImgUrl);
+    const coverImg = imgs[0] || resolveImgUrl(p.image);
     return `
       <article class="sw-card" data-id="${p.id}" style="animation-delay: ${delay}ms">
         <div class="sw-tile-media">
@@ -390,7 +399,7 @@ function openModal(id) {
   const p = PRODUCTS.find(x => x.id === id);
   if (!p) return;
 
-  currentModalImages = (Array.isArray(p.images) && p.images.length > 0) ? p.images : [p.image];
+  currentModalImages = ((Array.isArray(p.images) && p.images.length > 0) ? p.images : [p.image]).map(resolveImgUrl);
   currentModalImgIndex = 0;
 
   const hasMulti = currentModalImages.length > 1;

@@ -55,11 +55,19 @@ module.exports = async (req, res) => {
   }
 
   try {
-    const { products, images } = req.body || {};
+    const { products: rawProducts, images } = req.body || {};
 
-    if (!Array.isArray(products)) {
+    if (!Array.isArray(rawProducts)) {
       return res.status(400).json({ success: false, error: 'products array is required' });
     }
+
+    const RAW_CDN_PREFIX = `https://raw.githubusercontent.com/${REPO}/main/`;
+    const toCdn = (u) => (typeof u === 'string' && u.startsWith('assets/item-')) ? RAW_CDN_PREFIX + u : u;
+    const products = rawProducts.map(p => ({
+      ...p,
+      image: toCdn(p.image),
+      images: Array.isArray(p.images) ? p.images.map(toCdn) : (p.image ? [toCdn(p.image)] : [])
+    }));
 
     // 1. Sync to Supabase in Real-time (if configured)
     let supabaseSuccess = false;

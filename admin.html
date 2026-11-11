@@ -611,8 +611,17 @@
     // Catalog state
     let products = [];
     let pendingImages = {};
+    let localPreviewCache = {};
     let currentImages = [];
     const MAX_PRODUCT_IMAGES = 5;
+    const RAW_CDN_PREFIX = `https://raw.githubusercontent.com/${REPO}/main/`;
+
+    function toCdnUrl(imgPath) {
+      if (typeof imgPath === 'string' && imgPath.startsWith('assets/item-')) {
+        return RAW_CDN_PREFIX + imgPath;
+      }
+      return imgPath;
+    }
 
     document.getElementById('tokenBtn').addEventListener('click', () => {
       const current = getGithubToken() || '';
@@ -674,10 +683,17 @@
     };
 
     function getPreviewUrl(imgPath) {
+      if (!imgPath) return 'assets/p1.jpg';
+      if (localPreviewCache[imgPath]) return localPreviewCache[imgPath];
       if (pendingImages[imgPath] && pendingImages[imgPath].previewUrl) {
         return pendingImages[imgPath].previewUrl;
       }
-      return imgPath;
+      const relative = imgPath.startsWith(RAW_CDN_PREFIX) ? imgPath.slice(RAW_CDN_PREFIX.length) : imgPath;
+      if (localPreviewCache[relative]) return localPreviewCache[relative];
+      if (pendingImages[relative] && pendingImages[relative].previewUrl) {
+        return pendingImages[relative].previewUrl;
+      }
+      return toCdnUrl(imgPath);
     }
 
     function renderTable() {
@@ -809,11 +825,14 @@
           const dataUrl = canvas.toDataURL('image/jpeg', 0.88);
           const uniqueSuffix = Date.now() + '-' + Math.floor(Math.random() * 1000);
           const filename = 'assets/item-' + uniqueSuffix + '.jpg';
+          const cdnUrl = RAW_CDN_PREFIX + filename;
           pendingImages[filename] = {
             base64: dataUrl.split(',')[1],
             previewUrl: dataUrl
           };
-          currentImages.push(filename);
+          localPreviewCache[filename] = dataUrl;
+          localPreviewCache[cdnUrl] = dataUrl;
+          currentImages.push(cdnUrl);
           renderMultiImgGrid();
         } catch (err) {
           uploadPrompt.innerHTML = '<div style="font-size: 13px; color: #b91c1c;">⚠️ ไม่สามารถแปลงรูปภาพได้ กรุณาลองใหม่อีกครั้ง</div>';
