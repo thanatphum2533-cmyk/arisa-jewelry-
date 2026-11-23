@@ -1,5 +1,21 @@
 [
   {
+    "id": "AJ-N59",
+    "category": "necklaces",
+    "name": "สร้อยคอเงินแท้เส้นจิ้วพร้อมจี้วันเกิด",
+    "sub": "สร้อยคอเงินแท้เส้นจิ้วพร้อมจี้วันเกิด",
+    "price": 699,
+    "badge": "",
+    "weight": "3.0 กรัม",
+    "sizing": "14 นิ้ว",
+    "desc": "✨ รายละเอียดสินค้า ✨\n· วัสดุ: สร้อยคอทำจากเงินแท้ 1.2 มิล\n· ลาย: ลายสี่เสา สวยงามและมีเอกลักษณ์\n· ความยาว: 16-20 นิ้ว สำหรับเด็ก\n\nสินค้าที่สมบูรณ์แบบสำหรับเด็ก 🌟\nสร้อยคอเงินแท้ลายสี่เสา1.2มิลของเด็ก 14 นิ้ว ให้ความรู้สึกที่สวยงามและมีเอกลักษณ์ ทำจากเงินแท้ 1.2 มิล สำหรับเด็ก",
+    "image": "https://raw.githubusercontent.com/thanatphum2533-cmyk/arisa-jewelry-/main/assets/item-1795402157003-389.jpg",
+    "images": [
+      "https://raw.githubusercontent.com/thanatphum2533-cmyk/arisa-jewelry-/main/assets/item-1795402157003-389.jpg",
+      "https://raw.githubusercontent.com/thanatphum2533-cmyk/arisa-jewelry-/main/assets/item-1795402160741-274.jpg"
+    ]
+  },
+  {
     "id": "AJ-N58",
     "category": "necklaces",
     "name": "ทองคำแท้ 92.5% ลายคั่นเส้นเล็ก",
