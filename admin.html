@@ -498,7 +498,10 @@
       <section class="admin-panel">
         <h2>
           <span>รายการสินค้าทั้งหมดในร้าน (<span id="totalItems">0</span> ชิ้น)</span>
-          <button type="button" class="btn-sm" id="refreshBtn" title="โหลดข้อมูลล่าสุดจากเว็บจริง">🔄 รีเฟรช</button>
+          <div style="display: flex; gap: 8px; align-items: center;">
+            <button type="button" class="btn-sm" id="exportShopeeBtn" style="background: #EE4D2D; color: #FFFFFF; border-color: #EE4D2D; font-weight: 500;" title="ดาวน์โหลดไฟล์ข้อมูลสินค้าทั้งหมดสำหรับนำเข้า Shopee">🟠 ส่งออกไฟล์ลง Shopee</button>
+            <button type="button" class="btn-sm" id="refreshBtn" title="โหลดข้อมูลล่าสุดจากเว็บจริง">🔄 รีเฟรช</button>
+          </div>
         </h2>
         <div style="overflow-x: auto;">
           <table class="admin-table">
@@ -1167,6 +1170,110 @@
     }
 
     document.getElementById('publishBtn').addEventListener('click', publishToLive);
+
+    // Export all products to Shopee CSV (UTF-8 with BOM for Excel compatibility)
+    document.getElementById('exportShopeeBtn').addEventListener('click', () => {
+      if (!products || products.length === 0) {
+        alert('ยังไม่มีข้อมูลสินค้าในระบบ');
+        return;
+      }
+
+      const SHOPEE_CAT = {
+        necklaces: ['100554', 'เครื่องประดับ > สร้อยคอ'],
+        pendants: ['100555', 'เครื่องประดับ > จี้และชาร์ม'],
+        amulets: ['100555', 'เครื่องประดับ > จี้พระเลี่ยมเงินแท้'],
+        earrings: ['100552', 'เครื่องประดับ > ต่างหู'],
+        rings: ['100556', 'เครื่องประดับ > แหวน'],
+        bracelets: ['100551', 'เครื่องประดับ > กำไลและสร้อยข้อมือ']
+      };
+
+      const fullImgUrl = (u) => {
+        if (!u) return '';
+        if (u.startsWith('http://') || u.startsWith('https://')) return u;
+        return RAW_CDN_PREFIX + u.replace(/^\/+/, '');
+      };
+
+      const csvEscape = (val) => {
+        const str = String(val ?? '');
+        if (str.includes('"') || str.includes(',') || str.includes('\n') || str.includes('\r')) {
+          return '"' + str.replace(/"/g, '""') + '"';
+        }
+        return str;
+      };
+
+      const headers = [
+        'รหัสหมวดหมู่ Shopee (Category ID)',
+        'ชื่อหมวดหมู่ (Category Name)',
+        'รหัสสินค้าหลัก (Parent SKU)',
+        'ชื่อสินค้า (Product Name)',
+        'รายละเอียดสินค้า (Product Description)',
+        'ราคา (Price)',
+        'คลัง (Stock)',
+        'น้ำหนักเนื้อเงิน',
+        'ขนาด / ความยาว',
+        'น้ำหนักพัสดุรวมกล่อง (kg)',
+        'กว้าง (cm)',
+        'ยาว (cm)',
+        'สูง (cm)',
+        'รูปภาพปก (Cover Image)',
+        'รูปภาพสินค้า 1',
+        'รูปภาพสินค้า 2',
+        'รูปภาพสินค้า 3',
+        'รูปภาพสินค้า 4',
+        'รูปภาพสินค้า 5'
+      ];
+
+      const lines = [headers.map(csvEscape).join(',')];
+
+      products.forEach(p => {
+        const [catId, catName] = SHOPEE_CAT[p.category] || ['100554', 'เครื่องประดับเงินแท้ 92.5%'];
+        const sku = (p.id || '').trim();
+        const name = (p.name || '').trim().slice(0, 120);
+        const weight = (p.weight || '-').trim();
+        const sizing = (p.sizing || '-').trim();
+        const rawDesc = (p.desc || '').trim();
+
+        const fullDesc = `${name}\nรหัสสินค้า: ${sku}\n\n${rawDesc}\n\n━━━━━━━━━━━━━━━\n📌 ข้อมูลจำเพาะสินค้า (ARISA JEWELRY)\n• วัสดุ: เงินแท้มาตรฐานสากล 92.5% (Sterling Silver) ปราศจากนิกเกิล ไม่ลอก ไม่คัน\n• น้ำหนักเนื้อเงิน: ${weight}\n• ขนาด / ความยาว: ${sizing}\n• การรับประกัน: รับประกันเนื้อเงินแท้ 92.5% ทุกชิ้น พร้อมบริการดูแลหลังการขาย`;
+
+        let imgs = (Array.isArray(p.images) && p.images.length > 0) ? p.images : [p.image];
+        imgs = imgs.filter(Boolean).map(fullImgUrl).slice(0, 5);
+        while (imgs.length < 5) imgs.push('');
+
+        const row = [
+          catId,
+          catName,
+          sku,
+          name,
+          fullDesc,
+          p.price || 0,
+          10,
+          weight,
+          sizing,
+          0.05,
+          10,
+          12,
+          5,
+          imgs[0],
+          imgs[0],
+          imgs[1],
+          imgs[2],
+          imgs[3],
+          imgs[4]
+        ];
+        lines.push(row.map(csvEscape).join(','));
+      });
+
+      const bom = '\uFEFF';
+      const blob = new Blob([bom + lines.join('\r\n')], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `shopee-products-arisa-jewelry-${products.length}-items.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    });
 
     initAdmin();
   </script>
